@@ -1,4 +1,4 @@
 		Pobvnc
 « Another vnc client for reverse connections. »
 
-
+Deps GNU/Linux: tigervnc, x11vnc .
