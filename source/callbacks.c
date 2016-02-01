@@ -12,9 +12,10 @@ gint State=0;
 
 void StartStopConnection(GtkWidget *widget, gpointer user_data)
 {
-	GError* error = NULL;
+	GError *error = NULL;
 	gchar *cmd;
-	gchar* host=gtk_entry_get_text (entryHost), *port=gtk_entry_get_text (entryPort);
+	const gchar *host=gtk_entry_get_text (GTK_ENTRY(entryHost));
+	const gchar *port=gtk_entry_get_text (GTK_ENTRY(entryPort));
 	
 	
 	if (State==0) //Not Connected

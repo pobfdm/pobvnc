@@ -1,8 +1,8 @@
 CPP = gcc
 OPTS = `pkg-config --cflags --libs gtk+-2.0` 
 
-CPPWIN32= i686-pc-mingw32-gcc
-OPTSWIN32 = `i686-pc-mingw32-pkg-config --cflags --libs gtk+-2.0`
+CPPWIN32= i686-w64-mingw32.static-gcc  
+OPTSWIN32 = -mwindows -mms-bitfields `i686-w64-mingw32.static-pkg-config --cflags --libs gtk+-3.0`
 
 resource:
 	glib-compile-resources --generate-source linux64-resource.xml

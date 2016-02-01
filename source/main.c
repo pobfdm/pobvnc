@@ -35,7 +35,6 @@ int main(int argc, char* argv[])
 	GFile*  myDEST =  g_file_new_for_path(glade_file);
 	g_file_copy (mySRC,  myDEST,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    &error);
 	
- 
     /*Infine carica come disolito il file dell'interfaccia */
 	xml = gtk_builder_new ();
 	if (!gtk_builder_add_from_file (xml, glade_file, &error))
@@ -43,7 +42,6 @@ int main(int argc, char* argv[])
 		g_warning (_("Couldn\'t load builder file: %s"), error->message);
 		g_error_free (error);
 	}
-	
 	
  
 	/*Callbacks connect*/
