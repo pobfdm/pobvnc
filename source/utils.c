@@ -100,3 +100,60 @@ int getBitsCpu()
 		return 64 ;
 	}
 }
+
+
+ 
+char* GetKey(const gchar* File,const gchar* group ,const gchar* key)
+{
+	//Una varibile per gli eventuali errori
+	GError *error=NULL;
+ 
+	//Mi preparo a leggere il file con le chiavi
+	GKeyFile * mykey = g_key_file_new();
+ 
+	g_key_file_load_from_file (mykey, File, G_KEY_FILE_KEEP_COMMENTS, &error);
+	gchar* myval= g_key_file_get_value  (mykey, group, key, &error);
+ 
+	g_key_file_free (mykey);
+ 
+ 
+	//Gestisco eventuali errori di lettura
+	if (error!=NULL)
+	{
+		 g_error("Attenzione errore nella lettura : %s\n",error->message);
+		return NULL;
+	}
+ 
+	return myval;
+} 
+ 
+ 
+void* SetKey(const gchar* File,const gchar* group , const gchar* key, const gchar* content)
+{
+	//Una varibile per gli eventuali errori
+	GError *error=NULL;
+ 
+	//Mi preparo a leggere il file con le chiavi
+	GKeyFile *mykey = g_key_file_new();
+	g_key_file_load_from_file (mykey, File, G_KEY_FILE_KEEP_COMMENTS, &error);
+ 
+	//Scrivo la chiave (immagine in memoria, non scritta sul file)
+	g_key_file_set_string(mykey, group, key, content);
+ 
+    //Adesso scrivo il file File
+    gsize size;
+    gchar* data = g_key_file_to_data (mykey, &size, &error);
+    g_file_set_contents (File, data, size,  &error);
+ 
+	//Faccio pulizia delle strutture non piu' necessarie;
+	g_free (data);
+    g_key_file_free (mykey);
+ 
+    //Gestisco eventuali errori di lettura
+	if (error!=NULL)
+	{
+		 g_error("Attenzione errore nella lettura : %s\n",error->message);
+		return NULL;
+	}
+ 
+}  

@@ -18,7 +18,13 @@ void on_MainWindow_delete_event(GtkWidget *widget, gpointer user_data)
     abortConnection();
     gtk_main_quit();
 }
- 
+
+
+void init()
+{
+	gtk_window_set_title(GTK_WINDOW(MainWindow),"Pobvnc");
+	gtk_window_resize(GTK_WINDOW(MainWindow),400, 200);
+} 
 
 int main(int argc, char* argv[])
 {
@@ -43,7 +49,8 @@ int main(int argc, char* argv[])
 		g_error_free (error);
 	}
 	
- 
+	
+	
 	/*Callbacks connect*/
 	entryHost= gtk_builder_get_object (xml,"entryHost");
 	entryPort= gtk_builder_get_object (xml,"entryPort");
@@ -57,7 +64,10 @@ int main(int argc, char* argv[])
  
 	toggleServer=gtk_builder_get_object (xml,"checkbuttonServer" );
 	g_signal_connect (toggleServer, "toggled", G_CALLBACK(isServer), NULL);
-
+	
+	/*Initializations*/
+	init();
+	
 	gtk_main ();
     return 0;
 }
