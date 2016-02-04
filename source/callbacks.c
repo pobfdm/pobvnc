@@ -17,6 +17,7 @@ extern GObject *MainWindow;
 extern GObject *StartStop;
 gint State=0; 
 gchar* WinVNC;
+gchar* vncviewer;
 gchar* publicIp="";
 
 void StartStopConnection(GtkWidget *widget, gpointer user_data)
@@ -38,6 +39,13 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 	GFile*  mySRC2 =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/VNCHooks.dll");
 	GFile*  myDEST2 =  g_file_new_for_path(VNCHooks);
 	g_file_copy (mySRC2,  myDEST2,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
+	
+	
+	//Copy vncviewer.exe to temp dir
+	vncviewer=g_build_filename(g_get_tmp_dir(),"vncviewer.exe", NULL);
+	GFile*  mySRC3 =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/vncviewer.exe");
+	GFile*  myDEST3 =  g_file_new_for_path(vncviewer);
+	g_file_copy (mySRC3,  myDEST3,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
 	#endif
 	
 	
@@ -68,8 +76,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 		}else{
 			//Start Server mode
 			#ifdef linux
-			cmd=g_strdup_printf("vncviewer -listen %s", port);
-			g_print("%s\n",cmd);
+			cmd=g_strdup_printf("vncviewer -QualityLevel 6 -listen %s", port);
 			g_spawn_command_line_async (cmd, &error);
 			if (error!=NULL)
 			{
@@ -78,6 +85,11 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 				 abortConnection();
 				 return ;
 			}
+			#endif
+			#ifdef _WIN32
+			g_print("Siamo QUI???\n");
+			cmd=g_strdup_printf("%s -QualityLevel 6 -listen %s", vncviewer,port);
+			WinExec(cmd, NULL); 
 			#endif
 		}
 		State=1;
@@ -114,6 +126,7 @@ void abortConnection()
 		 WinExec(cmd,NULL);
 	}else{
 		//server
+		WinExec("taskkill /im vncviewer.exe /f",NULL);
 	}
 	#endif
 	State=0;
