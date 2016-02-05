@@ -10,7 +10,7 @@
 
 GtkBuilder *xml;                                                 
 GObject   *widget, *MainWindow, *StartStop, *toggleServer, *entryHost, *entryPort, *aboutWin;  
-
+gchar* 	logo_file ;
 
 
 void on_MainWindow_delete_event(GtkWidget *widget, gpointer user_data)       
@@ -27,14 +27,17 @@ void init()
 	
 	
 	//Set Main Image
-	gchar* image_file = g_build_filename(g_get_tmp_dir(),"lifesaver.png", NULL);
+	gchar* 	logo_file = g_build_filename(g_get_tmp_dir(),"lifesaver.png", NULL);
 	GFile*  mySRC =  g_file_new_for_uri("resource:///org/pobvnc/res/lifesaver.png");
-	GFile*  myDEST =  g_file_new_for_path(image_file);
+	GFile*  myDEST =  g_file_new_for_path(logo_file);
 	g_file_copy (mySRC,  myDEST,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL); 
 	
-	
 	GObject *imgMain= gtk_builder_get_object (xml,"imgMain");
-	gtk_image_set_from_file(GTK_IMAGE(imgMain),image_file);
+	gtk_image_set_from_file(GTK_IMAGE(imgMain),logo_file);
+	
+	GdkPixbuf *logo = gdk_pixbuf_new_from_file (logo_file, NULL);
+	gtk_window_set_default_icon (logo);
+	gtk_window_set_icon (GTK_WINDOW(MainWindow), logo);
 } 
 
 int main(int argc, char* argv[])

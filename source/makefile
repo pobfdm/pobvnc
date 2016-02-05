@@ -19,7 +19,7 @@ linux64:
 
 win32:
 	glib-compile-resources --generate-source win32-resource.xml
-	$(CPPWIN32) win32-resource.c callbacks.c utils.c main.c -o ../win32/pobvnc-i686.exe $(OPTSWIN32)
+	$(CPPWIN32) exeicon.o win32-resource.c callbacks.c utils.c main.c -o ../win32/pobvnc-i686.exe $(OPTSWIN32)
 	strip ../win32/pobvnc-i686.exe 
 
 all:

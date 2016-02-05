@@ -23,6 +23,7 @@ gint State=0;
 gchar* WinVNC;
 gchar* vncviewer;
 gchar* publicIp="";
+extern gchar* 	logo_file ;
 
 void StartStopConnection(GtkWidget *widget, gpointer user_data)
 {
@@ -184,6 +185,10 @@ void aboutDialog()
 	g_print("About\n");
 	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(aboutWin),  VERSION);
 	gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (aboutWin), PROJECTURL);
+	
+	GdkPixbuf *logo = gdk_pixbuf_new_from_file (logo_file, NULL);
+	gtk_about_dialog_set_logo(GTK_DIALOG (aboutWin), logo);
+	
 	gtk_dialog_run (GTK_DIALOG (aboutWin));
 	gtk_widget_hide (GTK_DIALOG (aboutWin));
 	
