@@ -2,5 +2,6 @@
 <gresources>
   <gresource prefix="/org/pobvnc/res">
     <file compressed="true">gui.xml</file>
+    <file compressed="true">lifesaver.png</file>
   </gresource>
 </gresources>

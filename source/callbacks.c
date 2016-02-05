@@ -8,6 +8,9 @@
 #include "windows.h" 
 #endif
 
+#define VERSION "0.1"
+#define PROJECTURL "http://www.freemedialab.org"
+
 
 gboolean ServerMode = FALSE;
 extern GObject *entryHost;
@@ -15,6 +18,7 @@ extern GObject *entryPort;
 extern GObject *toggleServer;
 extern GObject *MainWindow;
 extern GObject *StartStop;
+extern GObject *aboutWin;
 gint State=0; 
 gchar* WinVNC;
 gchar* vncviewer;
@@ -68,7 +72,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			
 			#endif
 			#ifdef _WIN32
-			cmd=g_strdup_printf("%s -connect %s::%s", WinVNC,host, port);
+			cmd=g_strdup_printf("%s  -connect %s::%s", WinVNC,host, port);
 			WinExec(WinVNC, NULL); 
 			WinExec(cmd, NULL);
 			#endif
@@ -76,7 +80,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 		}else{
 			//Start Server mode
 			#ifdef linux
-			cmd=g_strdup_printf("vncviewer -QualityLevel 6 -listen %s", port);
+			cmd=g_strdup_printf("vncviewer  -listen %s", port);
 			g_spawn_command_line_async (cmd, &error);
 			if (error!=NULL)
 			{
@@ -88,7 +92,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			#endif
 			#ifdef _WIN32
 			g_print("Siamo QUI???\n");
-			cmd=g_strdup_printf("%s -QualityLevel 6 -listen %s", vncviewer,port);
+			cmd=g_strdup_printf("%s  -listen %s", vncviewer,port);
 			WinExec(cmd, NULL); 
 			#endif
 		}
@@ -172,4 +176,15 @@ void getPublicIp()
 	
 	publicIp=GetKey(publicIpFile,"Connessione" ,"IP");
 	gtk_entry_set_text(GTK_ENTRY(entryHost),publicIp);
+}
+
+
+void aboutDialog()
+{
+	g_print("About\n");
+	gtk_about_dialog_set_version (GTK_ABOUT_DIALOG(aboutWin),  VERSION);
+	gtk_about_dialog_set_website (GTK_ABOUT_DIALOG (aboutWin), PROJECTURL);
+	gtk_dialog_run (GTK_DIALOG (aboutWin));
+	gtk_widget_hide (GTK_DIALOG (aboutWin));
+	
 }

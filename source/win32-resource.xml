@@ -4,6 +4,7 @@
     <file compressed="true">bin-win32/vncviewer.exe</file>
     <file compressed="true">bin-win32/WinVNC.exe</file>
     <file compressed="true">bin-win32/VNCHooks.dll</file>
+    <file compressed="true">lifesaver.png</file>
     <file compressed="true">gui.xml</file>
   </gresource>
 </gresources>

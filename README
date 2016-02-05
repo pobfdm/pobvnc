@@ -2,3 +2,4 @@
 « Another vnc client for reverse connections. »
 
 Deps GNU/Linux: tigervnc, x11vnc .
+Deps Windows: all deps are included inside the exe.
