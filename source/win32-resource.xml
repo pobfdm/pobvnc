@@ -2,8 +2,8 @@
 <gresources>
   <gresource prefix="/org/pobvnc/res">
     <file compressed="true">bin-win32/vncviewer.exe</file>
-    <file compressed="true">bin-win32/WinVNC.exe</file>
-    <file compressed="true">bin-win32/VNCHooks.dll</file>
+    <file compressed="true">bin-win32/winvnc4.exe</file>
+    <file compressed="true">bin-win32/wm_hooks.dll</file>
     <file compressed="true">lifesaver.png</file>
     <file compressed="true">gui.xml</file>
   </gresource>

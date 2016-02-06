@@ -20,7 +20,7 @@ extern GObject *MainWindow;
 extern GObject *StartStop;
 extern GObject *aboutWin;
 gint State=0; 
-gchar* WinVNC;
+gchar* winvnc4;
 gchar* vncviewer;
 gchar* publicIp="";
 extern gchar* 	logo_file ;
@@ -34,15 +34,15 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 	
 	#ifdef _WIN32
 	//Copy WinVNC.exe to temp dir
-	WinVNC=g_build_filename(g_get_tmp_dir(),"WinVNC.exe", NULL);
-	GFile*  mySRC =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/WinVNC.exe");
-	GFile*  myDEST =  g_file_new_for_path(WinVNC);
+	winvnc4=g_build_filename(g_get_tmp_dir(),"WinVNC.exe", NULL);
+	GFile*  mySRC =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/winvnc4.exe");
+	GFile*  myDEST =  g_file_new_for_path(winvnc4);
 	g_file_copy (mySRC,  myDEST,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
 	
 	//Copy VNCHooks.dll to temp dir
-	gchar* VNCHooks=g_build_filename(g_get_tmp_dir(),"VNCHooks.dll", NULL);
-	GFile*  mySRC2 =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/VNCHooks.dll");
-	GFile*  myDEST2 =  g_file_new_for_path(VNCHooks);
+	gchar* wm_hooks=g_build_filename(g_get_tmp_dir(),"VNCHooks.dll", NULL);
+	GFile*  mySRC2 =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/wm_hooks.dll");
+	GFile*  myDEST2 =  g_file_new_for_path(wm_hooks);
 	g_file_copy (mySRC2,  myDEST2,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
 	
 	
@@ -73,8 +73,8 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			
 			#endif
 			#ifdef _WIN32
-			cmd=g_strdup_printf("%s  -connect %s::%s", WinVNC,host, port);
-			WinExec(WinVNC, NULL); 
+			cmd=g_strdup_printf("%s  -connect %s:%s", winvnc4,host, port);
+			WinExec(winvnc4, NULL); 
 			WinExec(cmd, NULL);
 			#endif
 			
@@ -92,9 +92,8 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			}
 			#endif
 			#ifdef _WIN32
-			g_print("Siamo QUI???\n");
 			cmd=g_strdup_printf("%s  -listen %s", vncviewer,port);
-			WinExec(cmd, NULL); 
+			WinExec(cmd, SW_SHOWNORMAL); 
 			#endif
 		}
 		State=1;
@@ -127,8 +126,10 @@ void abortConnection()
 	if (ServerMode==FALSE) 
 	{
 		 //Client
-		 gchar* cmd=g_strdup_printf("%s -kill", WinVNC);
-		 WinExec(cmd,NULL);
+		 gchar* cmd=g_strdup_printf("%s -disconnect", winvnc4);
+		 WinExec(cmd,NULL); sleep(3);
+		 WinExec("taskkill /im winvnc4.exe /f",NULL);
+		 
 	}else{
 		//server
 		WinExec("taskkill /im vncviewer.exe /f",NULL);
