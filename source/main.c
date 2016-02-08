@@ -10,7 +10,9 @@
 
 GtkBuilder *xml;                                                 
 GObject   *widget, *MainWindow, *StartStop, *toggleServer, *entryHost, *entryPort, *aboutWin;  
+GObject	*lblStatus;	
 gchar* 	logo_file ;
+gchar* binPath;
 
 
 void on_MainWindow_delete_event(GtkWidget *widget, gpointer user_data)       
@@ -38,10 +40,14 @@ void init()
 	GdkPixbuf *logo = gdk_pixbuf_new_from_file (logo_file, NULL);
 	gtk_window_set_default_icon (logo);
 	gtk_window_set_icon (GTK_WINDOW(MainWindow), logo);
+	
+	setGreenStatus(_("I'm ready."));
 } 
 
 int main(int argc, char* argv[])
 {
+    binPath=g_strdup_printf("%s", argv[0]);
+    
     /*Gettex*/
     setlocale(LC_ALL,"");
     bindtextdomain("pobvnc",g_get_tmp_dir());
@@ -69,7 +75,7 @@ int main(int argc, char* argv[])
 	aboutWin=gtk_builder_get_object (xml,"aboutdialog");
 	entryHost= gtk_builder_get_object (xml,"entryHost");
 	entryPort= gtk_builder_get_object (xml,"entryPort");
-	
+	lblStatus= gtk_builder_get_object (xml,"lblStatus");
 	
 	MainWindow=gtk_builder_get_object (xml,"MainWindow" );
 	g_signal_connect (MainWindow, "delete_event", G_CALLBACK(on_MainWindow_delete_event), NULL);
@@ -87,6 +93,8 @@ int main(int argc, char* argv[])
 	GObject* imagemenuitemAbout=gtk_builder_get_object (xml,"imagemenuitemAbout" );
 	g_signal_connect (imagemenuitemAbout, "activate", G_CALLBACK(aboutDialog), NULL);
 	
+	GObject* imagemenuitemInstall=gtk_builder_get_object (xml,"imagemenuitemInstall" );
+	g_signal_connect (imagemenuitemInstall, "activate", G_CALLBACK(installRemove), NULL);
 	
 	/*Initializations*/
 	init();

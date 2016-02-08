@@ -5,7 +5,7 @@
 #define _(String) gettext (String) //per gettex
 
 #ifdef _WIN32 
-#include "windows.h" 
+	#include <windows.h>
 #endif
 
 #define VERSION "0.1"
@@ -24,6 +24,8 @@ gchar* winvnc4;
 gchar* vncviewer;
 gchar* publicIp="";
 extern gchar* 	logo_file ;
+extern binPath;
+
 
 void StartStopConnection(GtkWidget *widget, gpointer user_data)
 {
@@ -31,6 +33,18 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 	gchar *cmd;
 	const gchar *host=gtk_entry_get_text (GTK_ENTRY(entryHost));
 	const gchar *port=gtk_entry_get_text (GTK_ENTRY(entryPort));
+	
+	if (g_strcmp0 (host,"")==0 && ServerMode==FALSE)
+	{
+		err_message(MainWindow,_("Please, insert host"),_("The host field should not be empty"),_("Error"));
+		return ;
+	}
+	if (g_strcmp0 (port,"")==0)
+	{
+		err_message(MainWindow,_("Please, insert port"),_("The port field should not be empty"),_("Error"));
+		return ;
+	}
+	setGreenStatus(_("Connection..."));
 	
 	#ifdef _WIN32
 	//Copy WinVNC.exe to temp dir
@@ -113,6 +127,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 
 void abortConnection()
 {
+	
 	#ifdef linux
 	if (ServerMode==FALSE) 
 	{
@@ -139,6 +154,7 @@ void abortConnection()
 	gtk_button_set_label (GTK_BUTTON(StartStop), "gtk-connect");
 	gtk_widget_set_sensitive(GTK_WIDGET(toggleServer), TRUE);
 	g_print("Abort Connection...");
+	setGreenStatus(_("Disconnected."));
 }
 
 
@@ -193,4 +209,74 @@ void aboutDialog()
 	gtk_dialog_run (GTK_DIALOG (aboutWin));
 	gtk_widget_hide (GTK_DIALOG (aboutWin));
 	
+}
+
+void installRemove()
+{
+#ifdef linux
+	gchar* strDesktopFile="[Desktop Entry] \n\
+Type=Application\n\
+Name=Pobvnc\n\
+GenericName=Get Help!\n\
+Comment=Help a friend!\n\
+Exec=%s/.local/bin/pobvnc\n\
+Icon=%s/.local/share/icons/lifesaver.svg\n\
+Terminal=FALSE\n\
+StartupNotify=TRUE\n\
+Categories=Network;Utility;RemoteAccess;\n\
+";
+	strDesktopFile=g_strdup_printf(strDesktopFile, g_get_home_dir ());
+	gchar* pobvncBinFile=g_build_filename(g_get_home_dir (),".local/bin/pobvnc",NULL);
+	gchar* pobvncDesktopFile=g_build_filename(g_get_home_dir (),".local/share/applications/pobvnc.desktop",NULL);
+	gchar* pobvncIconFile=g_build_filename(g_get_home_dir (),".local/share/icons/lifesaver.svg",NULL);
+	
+	gchar* iconsDir=g_build_filename(g_get_home_dir (),".local/share/icons/",NULL);
+	gchar* binDir=g_build_filename(g_get_home_dir (),".local/bin/",NULL);
+	
+	gchar* desktopDir=g_get_user_special_dir (G_USER_DIRECTORY_DESKTOP);
+	gchar* fileInDesktop=g_strdup_printf("%s/pobvnc.desktop", desktopDir);
+	
+	if (!g_file_test (pobvncBinFile, G_FILE_TEST_EXISTS))
+	{
+		g_print("Installer begin...");
+		if (!g_file_test (binDir, G_FILE_TEST_EXISTS)) g_mkdir(binDir, 0755);
+		if (!g_file_test (iconsDir, G_FILE_TEST_EXISTS)) g_mkdir(iconsDir, 0755);
+		
+		//Write .destop file in $HOME/.local/share/applications/
+		g_file_set_contents (pobvncDesktopFile,strDesktopFile, -1,NULL);
+		g_chmod (pobvncDesktopFile,0755);
+		
+		//Write .destop file in desktop
+		g_file_set_contents (fileInDesktop,strDesktopFile, -1,NULL);
+		g_chmod (fileInDesktop,0755);
+		
+		//Copy icon file
+		GFile*  mySRC =  g_file_new_for_uri("resource:///org/pobvnc/res/lifesaver.svg");
+		GFile*  myDEST =  g_file_new_for_path(pobvncIconFile);
+		g_file_copy (mySRC,  myDEST,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
+		
+		//Copy bin file
+		GFile*  mySRC2 =  g_file_new_for_path(binPath);
+		GFile*  myDEST2 =  g_file_new_for_path(pobvncBinFile);
+		g_file_copy (mySRC2,  myDEST2,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
+		g_chmod (pobvncBinFile,0755);
+		
+		info_message(MainWindow,_("Installation complete."),_("Pobvnc is in your app menu."),_("Installation"));
+		
+	}else{
+		g_print("Disinstaller...");
+		g_remove (pobvncBinFile);
+		g_remove (pobvncDesktopFile);
+		g_remove (pobvncIconFile);
+		g_remove (fileInDesktop);
+		
+		info_message(MainWindow,_("Remove complete."),_("Pobvnc is not in your app menu."),_("Remove"));
+		
+	}
+#endif
+
+#ifdef _WIN32
+
+#endif
+
 }

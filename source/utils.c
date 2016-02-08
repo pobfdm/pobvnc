@@ -19,6 +19,9 @@
  *      MA 02110-1301, USA.
  */
 #include <gtk/gtk.h> 
+extern lblStatus;
+
+
  
 void
 info_message(GtkWidget *main_window,gchar* title, gchar *msg, gchar* winlabel)
@@ -120,7 +123,7 @@ char* GetKey(const gchar* File,const gchar* group ,const gchar* key)
 	//Gestisco eventuali errori di lettura
 	if (error!=NULL)
 	{
-		 g_error("Attenzione errore nella lettura : %s\n",error->message);
+		g_print("Attenzione errore nella lettura : %s\n",error->message);
 		return NULL;
 	}
  
@@ -152,8 +155,22 @@ void* SetKey(const gchar* File,const gchar* group , const gchar* key, const gcha
     //Gestisco eventuali errori di lettura
 	if (error!=NULL)
 	{
-		 g_error("Attenzione errore nella lettura : %s\n",error->message);
+		 g_print("Attenzione errore nella lettura : %s\n",error->message);
 		return NULL;
 	}
  
 }  
+
+void setGreenStatus(gchar* s)
+{
+	s=g_strdup_printf("<span foreground=\"green\">%s</span>", s);
+	gtk_label_set_markup (GTK_LABEL (lblStatus), s);
+}
+void setRedStatus(gchar* s){
+	s=g_strdup_printf("<span foreground=\"red\">%s</span>", s);
+	gtk_label_set_markup (GTK_LABEL (lblStatus), s);
+}
+
+#ifdef _WIN32
+
+#endif

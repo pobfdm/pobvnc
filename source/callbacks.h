@@ -3,3 +3,4 @@ void isServer(GtkToggleButton *widget, gpointer user_data) ;
 void abortConnection();
 gchar* getPublicIp();
 void aboutDialog();
+void installRemove();
