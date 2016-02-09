@@ -274,6 +274,7 @@ void aboutDialog()
 
 void installRemove()
 {
+	
 #ifdef linux
 	gchar* strDesktopFile="[Desktop Entry] \n\
 Type=Application\n\
@@ -296,9 +297,14 @@ Categories=Network;Utility;RemoteAccess;\n\
 	
 	gchar* desktopDir=g_get_user_special_dir (G_USER_DIRECTORY_DESKTOP);
 	gchar* fileInDesktop=g_strdup_printf("%s/pobvnc.desktop", desktopDir);
+	gint r;
 	
 	if (!g_file_test (pobvncBinFile, G_FILE_TEST_EXISTS))
 	{
+		r = info_YesNo(MainWindow,_("Do you want to install Pobvnc?"),_("Only local installation"), _("Installation"));
+		if (r==GTK_RESPONSE_NO) return;
+		
+		
 		g_print("Installer begin...");
 		if (!g_file_test (binDir, G_FILE_TEST_EXISTS)) g_mkdir(binDir, 0755);
 		if (!g_file_test (iconsDir, G_FILE_TEST_EXISTS)) g_mkdir(iconsDir, 0755);
@@ -325,6 +331,9 @@ Categories=Network;Utility;RemoteAccess;\n\
 		info_message(MainWindow,_("Installation complete."),_("Pobvnc is in your app menu."),_("Installation"));
 		
 	}else{
+		r = info_YesNo(MainWindow,_("Do you want to uninstall Pobvnc?"),_("Remove all"), _("Unstallation"));
+		if (r==GTK_RESPONSE_NO) return;
+		
 		g_print("Disinstaller...");
 		g_remove (pobvncBinFile);
 		g_remove (pobvncDesktopFile);
