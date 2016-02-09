@@ -108,6 +108,7 @@ int getBitsCpu()
  
 char* GetKey(const gchar* File,const gchar* group ,const gchar* key)
 {
+
 	//Una varibile per gli eventuali errori
 	GError *error=NULL;
  

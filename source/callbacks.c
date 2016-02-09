@@ -166,7 +166,7 @@ void isServer(GtkToggleButton* toggle, gpointer user_data)
 		ServerMode = TRUE;
 		gtk_widget_set_sensitive(GTK_WIDGET(entryHost), FALSE);
 		#ifdef linux 
-		getPublicIp(); 
+		if (getBitsCpu()==64) getPublicIp(); 
 		#endif     
 	}else{
 		g_print("Client mode...\n");
@@ -188,11 +188,11 @@ void getPublicIp()
 	{
 		 err_message(MainWindow,"Problemi nel ricevere ip pubblico",error->message,"Errore fatale");
 		 g_error_free (error);
-		 publicIp=g_strdup_printf("%s", "");
+		 //publicIp=g_strdup_printf("%s", "");
 		 return;
 	}
-	
 	publicIp=GetKey(publicIpFile,"Connessione" ,"IP");
+	g_print(publicIpFile);
 	gtk_entry_set_text(GTK_ENTRY(entryHost),publicIp);
 }
 
@@ -225,7 +225,7 @@ Terminal=FALSE\n\
 StartupNotify=TRUE\n\
 Categories=Network;Utility;RemoteAccess;\n\
 ";
-	strDesktopFile=g_strdup_printf(strDesktopFile, g_get_home_dir ());
+	strDesktopFile=g_strdup_printf(strDesktopFile, g_get_home_dir (),g_get_home_dir ());
 	gchar* pobvncBinFile=g_build_filename(g_get_home_dir (),".local/bin/pobvnc",NULL);
 	gchar* pobvncDesktopFile=g_build_filename(g_get_home_dir (),".local/share/applications/pobvnc.desktop",NULL);
 	gchar* pobvncIconFile=g_build_filename(g_get_home_dir (),".local/share/icons/lifesaver.svg",NULL);
