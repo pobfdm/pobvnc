@@ -25,6 +25,53 @@ gchar* vncviewer;
 gchar* publicIp="";
 extern gchar* 	logo_file ;
 extern binPath;
+gchar* logfile;
+gboolean checkLog;
+
+gboolean checkConnectionStatus(){
+    
+    if (checkLog==FALSE) return;
+    g_print("Checking \n");
+    const gchar *host=gtk_entry_get_text (GTK_ENTRY(entryHost));
+	const gchar *port=gtk_entry_get_text (GTK_ENTRY(entryPort));
+    gchar* m;
+    
+    
+    gchar** logContents;
+    g_file_get_contents (logfile,&logContents, NULL,NULL);
+    g_print(logContents);
+	
+	#ifdef linux
+	//If server accept connection
+	gchar* reverse_connect_ok=g_strdup_printf("reverse_connect: %s:%s/%s OK", host, port,host);
+	if (g_strrstr (logContents, reverse_connect_ok)!=NULL)
+	{
+		m=g_strdup_printf(_("Connect to %s port %s"),host, port);
+		setGreenStatus(m);
+	}
+	
+	
+	//If server stop connection
+	if (g_strrstr (logContents, "viewer exited")!=NULL)
+	{
+		checkLog=FALSE;
+		abortConnection();
+		setGreenStatus(_("Connection closed."));
+	}
+	
+	//If server is not up
+	reverse_connect_ok=g_strdup_printf("reverse_connect: %s:%s failed", host, port);
+	if (g_strrstr (logContents, reverse_connect_ok)!=NULL)
+	{
+		checkLog=FALSE;
+		abortConnection();
+		setRedStatus(_("Connection failed."));
+	}
+	
+	#endif
+	
+	return checkLog ;
+}
 
 
 void StartStopConnection(GtkWidget *widget, gpointer user_data)
@@ -33,6 +80,10 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 	gchar *cmd;
 	const gchar *host=gtk_entry_get_text (GTK_ENTRY(entryHost));
 	const gchar *port=gtk_entry_get_text (GTK_ENTRY(entryPort));
+	logfile=g_build_filename(g_get_tmp_dir(),"pobvnc.log", NULL);
+	gchar* m;
+	
+	
 	
 	if (g_strcmp0 (host,"")==0 && ServerMode==FALSE)
 	{
@@ -44,7 +95,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 		err_message(MainWindow,_("Please, insert port"),_("The port field should not be empty"),_("Error"));
 		return ;
 	}
-	setGreenStatus(_("Connection..."));
+	
 	
 	#ifdef _WIN32
 	//Copy WinVNC.exe to temp dir
@@ -74,8 +125,15 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 		if (ServerMode==FALSE)
 		{
 			//Start Client Mode
+			setGreenStatus(_("Connection..."));
+			
+			//start Client log checking
+			checkLog=TRUE;
+			g_timeout_add(2000, checkConnectionStatus, NULL);
+			
 			#ifdef linux
-			cmd=g_strdup_printf("x11vnc -ncache 10 -connect_or_exit %s:%s", host, port);
+			g_remove (logfile);
+			cmd=g_strdup_printf("x11vnc -noxdamage -ncache 10 -connect_or_exit %s:%s -o %s", host, port,logfile);
 			g_spawn_command_line_async (cmd, &error);
 			if (error!=NULL)
 			{
@@ -94,6 +152,8 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			
 		}else{
 			//Start Server mode
+			m=g_strdup_printf(_("Listen to port %s"), port);
+			setGreenStatus(m);
 			#ifdef linux
 			cmd=g_strdup_printf("vncviewer  -listen %s", port);
 			g_spawn_command_line_async (cmd, &error);
@@ -127,6 +187,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 
 void abortConnection()
 {
+	checkLog=FALSE;
 	
 	#ifdef linux
 	if (ServerMode==FALSE) 
@@ -280,3 +341,7 @@ Categories=Network;Utility;RemoteAccess;\n\
 #endif
 
 }
+
+
+
+
