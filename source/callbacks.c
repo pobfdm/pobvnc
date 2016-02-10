@@ -98,13 +98,13 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 	
 	
 	#ifdef _WIN32
-	//Copy WinVNC.exe to temp dir
-	winvnc4=g_build_filename(g_get_tmp_dir(),"WinVNC.exe", NULL);
+	//Copy winvnc4.exe to temp dir
+	winvnc4=g_build_filename(g_get_tmp_dir(),"winvnc4.exe", NULL);
 	GFile*  mySRC =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/winvnc4.exe");
 	GFile*  myDEST =  g_file_new_for_path(winvnc4);
 	g_file_copy (mySRC,  myDEST,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
 	
-	//Copy VNCHooks.dll to temp dir
+	//Copy wm_hooks.dll to temp dir
 	gchar* wm_hooks=g_build_filename(g_get_tmp_dir(),"VNCHooks.dll", NULL);
 	GFile*  mySRC2 =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/wm_hooks.dll");
 	GFile*  myDEST2 =  g_file_new_for_path(wm_hooks);
@@ -145,8 +145,10 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			
 			#endif
 			#ifdef _WIN32
-			cmd=g_strdup_printf("%s  -connect %s:%s", winvnc4,host, port);
-			WinExec(winvnc4, NULL); 
+			
+			cmd=g_strdup_printf("%s -SecurityTypes None -Log *:file:80", winvnc4);
+			WinExec(cmd, NULL);
+			cmd=g_strdup_printf("%s -connect %s:%s", winvnc4,host, port); 
 			WinExec(cmd, NULL);
 			#endif
 			
@@ -203,7 +205,7 @@ void abortConnection()
 	{
 		 //Client
 		 gchar* cmd=g_strdup_printf("%s -disconnect", winvnc4);
-		 WinExec(cmd,NULL); sleep(3);
+		 WinExec(cmd,NULL); 
 		 WinExec("taskkill /im winvnc4.exe /f",NULL);
 		 
 	}else{
