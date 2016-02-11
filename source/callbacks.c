@@ -95,7 +95,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 		err_message(MainWindow,_("Please, insert port"),_("The port field should not be empty"),_("Error"));
 		return ;
 	}
-	
+	sleep(1);
 	
 	#ifdef _WIN32
 	//Copy winvnc4.exe to temp dir
@@ -105,7 +105,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 	g_file_copy (mySRC,  myDEST,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
 	
 	//Copy wm_hooks.dll to temp dir
-	gchar* wm_hooks=g_build_filename(g_get_tmp_dir(),"VNCHooks.dll", NULL);
+	gchar* wm_hooks=g_build_filename(g_get_tmp_dir(),"wm_hooks.dll", NULL);
 	GFile*  mySRC2 =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/wm_hooks.dll");
 	GFile*  myDEST2 =  g_file_new_for_path(wm_hooks);
 	g_file_copy (mySRC2,  myDEST2,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
@@ -146,8 +146,8 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			#endif
 			#ifdef _WIN32
 			
-			cmd=g_strdup_printf("%s -SecurityTypes None -Log *:file:80", winvnc4);
-			WinExec(cmd, NULL);
+			cmd=g_strdup_printf("%s -SecurityTypes None -Log *:stdout:100", winvnc4);
+			WinExec(cmd, SW_SHOWNORMAL);
 			cmd=g_strdup_printf("%s -connect %s:%s", winvnc4,host, port); 
 			WinExec(cmd, NULL);
 			#endif
@@ -204,8 +204,8 @@ void abortConnection()
 	if (ServerMode==FALSE) 
 	{
 		 //Client
-		 gchar* cmd=g_strdup_printf("%s -disconnect", winvnc4);
-		 WinExec(cmd,NULL); 
+		 //gchar* cmd=g_strdup_printf("%s -DisconnectClients", winvnc4);
+		 //WinExec(cmd,NULL); 
 		 WinExec("taskkill /im winvnc4.exe /f",NULL);
 		 
 	}else{
