@@ -28,9 +28,16 @@ extern binPath;
 gchar* logfile;
 gboolean checkLog;
 
-gboolean checkConnectionStatus(){
-    
+gboolean checkConnectionStatus()
+{
     if (checkLog==FALSE) return;
+    
+    #ifdef _WIN32
+    //do not try c:\temp\WinVNC4.log even if it was not possible to create it
+	gchar* winLogDir=g_build_filename("c:","temp", NULL);
+	if (!g_file_test (winLogDir, G_FILE_TEST_EXISTS)) return;
+    #endif
+    
     g_print("Checking \n");
     const gchar *host=gtk_entry_get_text (GTK_ENTRY(entryHost));
 	const gchar *port=gtk_entry_get_text (GTK_ENTRY(entryPort));
@@ -46,7 +53,7 @@ gboolean checkConnectionStatus(){
 	gchar* reverse_connect_ok=g_strdup_printf("reverse_connect: %s:%s/%s OK", host, port,host);
 	if (g_strrstr (logContents, reverse_connect_ok)!=NULL)
 	{
-		m=g_strdup_printf(_("Connect to %s port %s"),host, port);
+		m=g_strdup_printf(_("Connected to %s port %s"),host, port);
 		setGreenStatus(m);
 	}
 	
@@ -56,7 +63,7 @@ gboolean checkConnectionStatus(){
 	{
 		checkLog=FALSE;
 		abortConnection();
-		setGreenStatus(_("Connection closed."));
+		setGreenStatus(_("Connection closed by the server."));
 	}
 	
 	//If server is not up
@@ -70,6 +77,37 @@ gboolean checkConnectionStatus(){
 	
 	#endif
 	
+	#ifdef _WIN32
+	//If server accept connection
+	gchar* reverse_connect_ok=g_strdup_printf("Connections: accepted: %s::%s", host, port);
+	if (g_strrstr (logContents, reverse_connect_ok)!=NULL)
+	{
+		m=g_strdup_printf(_("Connected to %s port %s"),host, port);
+		setGreenStatus(m);
+	}
+	//If server stop connection
+	gchar* reverse_connect_ko=g_strdup_printf("Connections: closed: %s::%s", host, port);
+	if (g_strrstr (logContents, reverse_connect_ko)!=NULL)
+	{
+		
+		m=g_strdup_printf(_("Connection closed by the server"),host, port);
+		checkLog=FALSE;
+		abortConnection();
+		setGreenStatus(m);
+	}
+	//If server is not up
+	gchar* conn=g_strdup_printf("reverse_connect: %s:%s failed", host, port);
+	if (g_strrstr (logContents, conn)!=NULL)
+	{
+		checkLog=FALSE;
+		abortConnection();
+		setRedStatus(_("Connection failed."));
+	}
+	
+	#endif
+	
+	
+	
 	return checkLog ;
 }
 
@@ -80,10 +118,16 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 	gchar *cmd;
 	const gchar *host=gtk_entry_get_text (GTK_ENTRY(entryHost));
 	const gchar *port=gtk_entry_get_text (GTK_ENTRY(entryPort));
-	logfile=g_build_filename(g_get_tmp_dir(),"pobvnc.log", NULL);
 	gchar* m;
-	
-	
+	#ifdef linux
+	logfile=g_build_filename(g_get_tmp_dir(),"pobvnc.log", NULL);
+	#endif
+	#ifdef _WIN32
+	//Winvnc4.exe has log filename fixed ('c:\temp\WinVNC4.log')
+	gchar* winLogDir=g_build_filename("c:","temp", NULL);
+	if (!g_file_test (winLogDir, G_FILE_TEST_EXISTS)) g_mkdir(winLogDir, 0755);
+	logfile=g_build_filename(winLogDir,"WinVNC4.log", NULL);
+	#endif	
 	
 	if (g_strcmp0 (host,"")==0 && ServerMode==FALSE)
 	{
@@ -145,8 +189,8 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			
 			#endif
 			#ifdef _WIN32
-			
-			cmd=g_strdup_printf("%s -SecurityTypes None -Log *:stdout:100", winvnc4);
+			g_remove (logfile);
+			cmd=g_strdup_printf("%s -SecurityTypes None -Log Connections:file:100", winvnc4);
 			WinExec(cmd, SW_SHOWNORMAL);
 			cmd=g_strdup_printf("%s -connect %s:%s", winvnc4,host, port); 
 			WinExec(cmd, NULL);
