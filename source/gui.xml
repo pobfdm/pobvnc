@@ -686,7 +686,15 @@ the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 &lt;http://www.gnu.org/philosophy/why-not-lgpl.html&gt;.
 </property>
-    <property name="authors">Fabio Di Matteo - pobfdm@gmail.com</property>
+    <property name="authors">Main author
+============
+
+	Fabio Di Matteo &lt;pobfdm@gmail.com&gt;
+
+Contributors
+============
+	Rita Guaiana &lt;ritaguaiana@gmail.com&gt;</property>
+    <property name="translator_credits" translatable="yes">Rita Guaiana - ritaguaiana@gmail.com</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>

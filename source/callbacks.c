@@ -9,7 +9,7 @@
 #endif
 
 #define VERSION "0.1"
-#define PROJECTURL "http://www.freemedialab.org"
+#define PROJECTURL "https://github.com/pobfdm/pobvnc"
 
 
 gboolean ServerMode = FALSE;
