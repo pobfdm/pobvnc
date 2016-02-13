@@ -28,7 +28,7 @@ extern binPath;
 gchar* logfile;
 gboolean checkLog;
 
-gboolean checkConnectionStatus()
+gboolean checkClientConnectionStatus()
 {
     if (checkLog==FALSE) return;
     
@@ -111,6 +111,56 @@ gboolean checkConnectionStatus()
 	return checkLog ;
 }
 
+gboolean checkServerConnectionStatus()
+{
+    if (checkLog==FALSE) return;
+    
+    #ifdef _WIN32
+    //do not try c:\temp\vncviewer.log even if it was not possible to create it
+	gchar* winLogDir=g_build_filename("c:","temp", NULL);
+	if (!g_file_test (winLogDir, G_FILE_TEST_EXISTS)) return;
+    #endif
+    
+    g_print("Checking Server\n");
+    const gchar *host=gtk_entry_get_text (GTK_ENTRY(entryHost));
+	const gchar *port=gtk_entry_get_text (GTK_ENTRY(entryPort));
+    gchar* m;
+    
+    #ifdef linux
+    gchar** logContents;
+    g_file_get_contents ("/tmp/vncviewer.log",&logContents, NULL,NULL);
+    g_print(logContents);
+    
+    //If server accept connection
+	gchar* reverse_connect_ok=g_strdup_printf("initialisation done");
+	if (g_strrstr (logContents, reverse_connect_ok)!=NULL)
+	{
+		m=g_strdup_printf(_("Connected to client"));
+		setGreenStatus(m);
+	}
+	
+	//If client stop connection
+	gchar* reverse_connect_ko=g_strdup_printf("End of stream" );
+	if (g_strrstr (logContents, reverse_connect_ko)!=NULL)
+	{
+		
+		m=g_strdup_printf(_("Connection closed by the client"));
+		checkLog=FALSE;
+		abortConnection();
+		setGreenStatus(m);
+	}
+	#endif
+	
+	
+	
+	
+	
+	return checkLog ;
+}
+
+
+
+
 
 void StartStopConnection(GtkWidget *widget, gpointer user_data)
 {
@@ -173,7 +223,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			
 			//start Client log checking
 			checkLog=TRUE;
-			g_timeout_add(2000, checkConnectionStatus, NULL);
+			g_timeout_add(2000, checkClientConnectionStatus, NULL);
 			
 			#ifdef linux
 			g_remove (logfile);
@@ -200,8 +250,14 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			//Start Server mode
 			m=g_strdup_printf(_("Listen to port %s"), port);
 			setGreenStatus(m);
+			checkLog=TRUE;
+			g_timeout_add(2000, checkServerConnectionStatus, NULL);
+			
 			#ifdef linux
-			cmd=g_strdup_printf("vncviewer  -listen %s", port);
+			g_remove (logfile);
+			cmd=g_strdup_printf("vncviewer -listen %s -Log *:file:100", port); // /tmp/vncviewer.log
+			//cmd=g_strdup_printf("vncviewer -listen %s ", port);
+			g_print("Cmd->%s\n",cmd);
 			g_spawn_command_line_async (cmd, &error);
 			if (error!=NULL)
 			{
@@ -299,7 +355,6 @@ void getPublicIp()
 		 return;
 	}
 	publicIp=GetKey(publicIpFile,"Connessione" ,"IP");
-	g_print(publicIpFile);
 	gtk_entry_set_text(GTK_ENTRY(entryHost),publicIp);
 }
 

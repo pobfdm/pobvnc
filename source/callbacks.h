@@ -4,4 +4,5 @@ void abortConnection();
 gchar* getPublicIp();
 void aboutDialog();
 void installRemove();
-gboolean checkConnectionStatus();
+gboolean checkClientConnectionStatus();
+gboolean checkServerConnectionStatus();
