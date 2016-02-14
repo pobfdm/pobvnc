@@ -95,15 +95,16 @@ gboolean checkClientConnectionStatus()
 		abortConnection();
 		setGreenStatus(m);
 	}
-	//If server is not up
-	gchar* conn=g_strdup_printf("reverse_connect: %s:%s failed", host, port);
-	if (g_strrstr (logContents, conn)!=NULL)
+	//If client fail to connect
+	gchar* connectFailed=g_strdup_printf("Failed to connect to address %s port %s", host,port );
+	if (g_strrstr (logContents, connectFailed)!=NULL)
 	{
+		
+		m=g_strdup_printf(_("Failed to connect to address %s port %s"),host,port);
 		checkLog=FALSE;
 		abortConnection();
-		setRedStatus(_("Connection failed."));
+		setRedStatus(m);
 	}
-	
 	#endif
 	
 	
@@ -127,9 +128,16 @@ gboolean checkServerConnectionStatus()
     gchar* m;
     
     #ifdef linux
+    gchar* vncviewerLog="/tmp/vncviewer.log" ;
+    #endif
+    #ifdef _WIN32
+    gchar* vncviewerLog="c:\\temp\\vncviewer.log" ;
+    #endif
+    
+    
     gchar** logContents;
-    g_file_get_contents ("/tmp/vncviewer.log",&logContents, NULL,NULL);
-    g_print(logContents);
+    g_file_get_contents (vncviewerLog,&logContents, NULL,NULL);
+    g_print("Tigervnc log:\n%s\n",logContents);
     
     //If server accept connection
 	gchar* reverse_connect_ok=g_strdup_printf("initialisation done");
@@ -149,13 +157,11 @@ gboolean checkServerConnectionStatus()
 		abortConnection();
 		setGreenStatus(m);
 	}
-	#endif
-	
-	
 	
 	
 	
 	return checkLog ;
+	
 }
 
 
@@ -240,7 +246,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			#endif
 			#ifdef _WIN32
 			g_remove (logfile);
-			cmd=g_strdup_printf("%s -SecurityTypes None -Log Connections:file:100", winvnc4);
+			cmd=g_strdup_printf("%s -SecurityTypes None -Log *:file:100", winvnc4);
 			WinExec(cmd, SW_SHOWNORMAL);
 			cmd=g_strdup_printf("%s -connect %s:%s", winvnc4,host, port); 
 			WinExec(cmd, NULL);
@@ -268,8 +274,9 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			}
 			#endif
 			#ifdef _WIN32
-			cmd=g_strdup_printf("%s  -listen %s", vncviewer,port);
-			WinExec(cmd, SW_SHOWNORMAL); 
+			//cmd=g_strdup_printf("%s  -listen %s", vncviewer,port);
+			cmd=g_strdup_printf("%s  -listen %s -Log *:file:100", vncviewer,port);
+			WinExec(cmd, SW_SHOWNORMAL);
 			#endif
 		}
 		State=1;
@@ -447,7 +454,7 @@ Categories=Network;Utility;RemoteAccess;\n\
 #endif
 
 #ifdef _WIN32
-
+	info_message(MainWindow,"Only for Gnu/Linux","This feature is only for GNU/Linux","Sorry...");
 #endif
 
 }
