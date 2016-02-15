@@ -63,17 +63,27 @@ void init()
 	gtk_window_set_icon (GTK_WINDOW(MainWindow), logo);
 	
 	setGreenStatus(_("I'm ready."));
+	
+	GObject* lblHost=gtk_builder_get_object (xml,"lblHost" );
+	gtk_label_set_text (GTK_LABEL(lblHost), _("Address"));
+	
+	GObject* lblPort=gtk_builder_get_object (xml,"lblPort" );
+	gtk_label_set_text (GTK_LABEL(lblPort), _("Port"));
+	
+	gtk_button_set_label (GTK_BUTTON(StartStop), _("Connect"));
+	
+		
 } 
+
+
+
+
 
 int main(int argc, char* argv[])
 {
     binPath=g_strdup_printf("%s", argv[0]);
+    initGettex();
     
-    /*Gettex*/
-    setlocale(LC_ALL,"");
-    bindtextdomain("pobvnc",g_get_tmp_dir());
-    textdomain("pobvnc");
- 
 	gtk_init (&argc, &argv);
   	GError* error = NULL;
 	gchar* glade_file = g_build_filename(g_get_tmp_dir(),"gui.xml", NULL);

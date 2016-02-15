@@ -718,10 +718,16 @@ Contributors
       </object>
     </child>
   </object>
+  <object class="GtkAction" id="action1"/>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-execute</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-quit</property>
   </object>
   <object class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -755,11 +761,11 @@ Contributors
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="imagemenuitemQuit">
-                        <property name="label">gtk-quit</property>
+                        <property name="label">Exit</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="use_stock">True</property>
+                        <property name="image">image2</property>
+                        <property name="use_stock">False</property>
                       </object>
                     </child>
                   </object>
@@ -825,7 +831,7 @@ Contributors
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkLabel" id="label4">
+                      <object class="GtkLabel" id="lblHost">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Host</property>
@@ -868,7 +874,7 @@ Contributors
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkLabel" id="label5">
+                      <object class="GtkLabel" id="lblPort">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Port</property>

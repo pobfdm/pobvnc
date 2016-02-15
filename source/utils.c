@@ -18,7 +18,10 @@
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA.
  */
-#include <gtk/gtk.h> 
+#include <gtk/gtk.h>
+
+#include<libintl.h> //per gettex
+#include<locale.h>	//per gettex 
 extern lblStatus;
 
 
@@ -172,6 +175,42 @@ void setRedStatus(gchar* s){
 	gtk_label_set_markup (GTK_LABEL (lblStatus), s);
 }
 
-#ifdef _WIN32
+void initGettex()
+{
+	gchar* f;
+	GFile*  mySRC;
+	GFile*  myDEST;
+	
+	
+	gchar* configDir=g_build_filename(g_get_user_config_dir(),"pobvnc", NULL);
+	if (!g_file_test (configDir, G_FILE_TEST_EXISTS)) g_mkdir(configDir, 0755);
+	
+	gchar* localeDir=g_build_filename(g_get_user_config_dir(),"pobvnc","locale", NULL);
+	if (!g_file_test (localeDir, G_FILE_TEST_EXISTS)) g_mkdir(localeDir, 0755);
+	
+	//Copyng translations
+	
+	//Italian traslation
+	gchar* localeItaDir=g_build_filename(g_get_user_config_dir(),"pobvnc","locale","it", NULL);
+	if (!g_file_test (localeItaDir, G_FILE_TEST_EXISTS)) g_mkdir(localeItaDir, 0755);
+	
+	gchar* localeItaDirMessages=g_build_filename(g_get_user_config_dir(),"pobvnc","locale","it" ,"LC_MESSAGES", NULL);
+	if (!g_file_test (localeItaDirMessages, G_FILE_TEST_EXISTS)) g_mkdir(localeItaDirMessages, 0755);
+	
+	f=g_build_filename(localeItaDirMessages,"pobvnc.mo", NULL);
+	mySRC =  g_file_new_for_uri("resource:///org/pobvnc/res/mo/it/pobvnc.mo");
+	myDEST =  g_file_new_for_path(f);
+	g_file_copy (mySRC,  myDEST,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
+	
+	
+	/*Gettex*/
+    setlocale(LC_ALL,"");
+    bindtextdomain("pobvnc",localeDir);
+    textdomain("pobvnc");
+ 
 
-#endif
+}
+
+
+
+

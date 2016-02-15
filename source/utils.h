@@ -6,3 +6,4 @@ char* GetKey(const gchar* File,const gchar* group ,const gchar* key);
 void* SetKey(const gchar* File,const gchar* group , const gchar* key, const gchar* content);
 void setGreenStatus(gchar* s);
 void setRedStatus(gchar* s);
+void initGettex();

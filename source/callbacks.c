@@ -280,7 +280,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			#endif
 		}
 		State=1;
-		gtk_button_set_label (GTK_BUTTON(widget), "gtk-disconnect");
+		gtk_button_set_label (GTK_BUTTON(widget), _("Disconnect"));
 		gtk_widget_set_sensitive(GTK_WIDGET(toggleServer), FALSE);
 		
 		
@@ -321,7 +321,7 @@ void abortConnection()
 	}
 	#endif
 	State=0;
-	gtk_button_set_label (GTK_BUTTON(StartStop), "gtk-connect");
+	gtk_button_set_label (GTK_BUTTON(StartStop), _("Connect"));
 	gtk_widget_set_sensitive(GTK_WIDGET(toggleServer), TRUE);
 	g_print("Abort Connection...");
 	setGreenStatus(_("Disconnected."));
@@ -454,7 +454,7 @@ Categories=Network;Utility;RemoteAccess;\n\
 #endif
 
 #ifdef _WIN32
-	info_message(MainWindow,"Only for Gnu/Linux","This feature is only for GNU/Linux","Sorry...");
+	info_message(MainWindow,_("Only for Gnu/Linux"),_("This feature is only for GNU/Linux"),_("Sorry..."));
 #endif
 
 }

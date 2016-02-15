@@ -6,5 +6,6 @@
     <file compressed="true">bin-win32/wm_hooks.dll</file>
     <file compressed="true">lifesaver.png</file>
     <file compressed="true">gui.xml</file>
+    <file compressed="true">mo/it/pobvnc.mo</file>
   </gresource>
 </gresources>

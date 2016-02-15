@@ -22,6 +22,10 @@ win32:
 	$(CPPWIN32) exeicon.o win32-resource.c callbacks.c utils.c main.c -o ../win32/pobvnc-i686.exe $(OPTSWIN32)
 	strip ../win32/pobvnc-i686.exe 
 
+translation:
+	msgfmt mo/it/pobvnc.po -o mo/it/pobvnc.mo
+
+
 all:
 	make linux64
 

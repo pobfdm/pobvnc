@@ -4,5 +4,6 @@
     <file compressed="true">gui.xml</file>
     <file compressed="true">lifesaver.png</file>
     <file compressed="true">lifesaver.svg</file>
+    <file compressed="true">mo/it/pobvnc.mo</file>
   </gresource>
 </gresources>
