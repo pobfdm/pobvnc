@@ -1,0 +1,134 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-02-14 17:09+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: callbacks.c:56 callbacks.c:85
+#, c-format
+msgid "Connected to %s port %s"
+msgstr ""
+
+#: callbacks.c:146
+msgid "Connected to client"
+msgstr ""
+
+#: callbacks.c:155
+msgid "Connection closed by the client"
+msgstr ""
+
+#: callbacks.c:93
+msgid "Connection closed by the server"
+msgstr ""
+
+#: callbacks.c:66
+msgid "Connection closed by the server."
+msgstr ""
+
+#: callbacks.c:75
+msgid "Connection failed."
+msgstr ""
+
+#: callbacks.c:228
+msgid "Connection..."
+msgstr ""
+
+#: main.c:89
+#, c-format
+msgid "Couldn't load builder file: %s"
+msgstr ""
+
+#: callbacks.c:327
+msgid "Disconnected."
+msgstr ""
+
+#: callbacks.c:412
+msgid "Do you want to install Pobvnc?"
+msgstr ""
+
+#: callbacks.c:442
+msgid "Do you want to uninstall Pobvnc?"
+msgstr ""
+
+#: callbacks.c:190 callbacks.c:195
+msgid "Error"
+msgstr ""
+
+#: callbacks.c:103
+#, c-format
+msgid "Failed to connect to address %s port %s"
+msgstr ""
+
+#: main.c:65
+msgid "I'm ready."
+msgstr ""
+
+#: callbacks.c:412 callbacks.c:439
+msgid "Installation"
+msgstr ""
+
+#: callbacks.c:439
+msgid "Installation complete."
+msgstr ""
+
+#: callbacks.c:257
+#, c-format
+msgid "Listen to port %s"
+msgstr ""
+
+#: callbacks.c:412
+msgid "Only local installation"
+msgstr ""
+
+#: callbacks.c:190
+msgid "Please, insert host"
+msgstr ""
+
+#: callbacks.c:195
+msgid "Please, insert port"
+msgstr ""
+
+#: callbacks.c:439
+msgid "Pobvnc is in your app menu."
+msgstr ""
+
+#: callbacks.c:451
+msgid "Pobvnc is not in your app menu."
+msgstr ""
+
+#: callbacks.c:451
+msgid "Remove"
+msgstr ""
+
+#: callbacks.c:442
+msgid "Remove all"
+msgstr ""
+
+#: callbacks.c:451
+msgid "Remove complete."
+msgstr ""
+
+#: callbacks.c:190
+msgid "The host field should not be empty"
+msgstr ""
+
+#: callbacks.c:195
+msgid "The port field should not be empty"
+msgstr ""
+
+#: callbacks.c:442
+msgid "Unstallation"
+msgstr ""
