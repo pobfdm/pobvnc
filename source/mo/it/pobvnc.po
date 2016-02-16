@@ -20,7 +20,7 @@ msgstr ""
 #: callbacks.c:56 callbacks.c:85
 #, c-format
 msgid "Connected to %s port %s"
-msgstr "Cnnesso a %s porta %s"
+msgstr "Connesso a %s porta %s"
 
 #: callbacks.c:146
 msgid "Connected to client"

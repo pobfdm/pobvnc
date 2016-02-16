@@ -147,7 +147,7 @@ gboolean checkServerConnectionStatus()
 		setGreenStatus(m);
 	}
 	
-	//If client stop connection
+	//If client stop connection (End of stream)
 	gchar* reverse_connect_ko=g_strdup_printf("End of stream" );
 	if (g_strrstr (logContents, reverse_connect_ko)!=NULL)
 	{
@@ -158,6 +158,25 @@ gboolean checkServerConnectionStatus()
 		setGreenStatus(m);
 	}
 	
+	//If client stop connection (Connection reset by peer)
+	gchar* reset_by_peer=g_strdup_printf("Connection reset by peer" );
+	if (g_strrstr (logContents, reset_by_peer)!=NULL)
+	{
+		
+		m=g_strdup_printf(_("Connection closed by the client"));
+		checkLog=FALSE;
+		abortConnection();
+		setGreenStatus(m);
+	}
+	//If client stop connection (104)
+	reset_by_peer=g_strdup_printf("(104)" );
+	if (g_strrstr (logContents, reset_by_peer)!=NULL)
+	{
+		m=g_strdup_printf(_("Connection closed by the client"));
+		checkLog=FALSE;
+		abortConnection();
+		setGreenStatus(m);
+	}
 	
 	
 	return checkLog ;
@@ -261,7 +280,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			
 			#ifdef linux
 			g_remove (logfile);
-			cmd=g_strdup_printf("vncviewer -listen %s -Log *:file:100", port); // /tmp/vncviewer.log
+			cmd=g_strdup_printf("vncviewer -listen %s -Log *:file:30", port); // /tmp/vncviewer.log
 			//cmd=g_strdup_printf("vncviewer -listen %s ", port);
 			g_print("Cmd->%s\n",cmd);
 			g_spawn_command_line_async (cmd, &error);
@@ -274,9 +293,13 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			}
 			#endif
 			#ifdef _WIN32
-			//cmd=g_strdup_printf("%s  -listen %s", vncviewer,port);
-			cmd=g_strdup_printf("%s  -listen %s -Log *:file:100", vncviewer,port);
-			WinExec(cmd, SW_SHOWNORMAL);
+			//cmd=g_strdup_printf("%s  -listen %s -Log *:file:100", vncviewer,port);
+			//WinExec(cmd, SW_SHOWNORMAL);
+			
+			//cmd=g_strdup_printf("start /B %s  -listen %s -Log *:file:100", vncviewer,port);
+			//system(cmd);
+			cmd=g_strdup_printf("%s  -listen %s -Log *:file:30", vncviewer,port);
+			StartProcess(cmd);
 			#endif
 		}
 		State=1;
@@ -311,8 +334,6 @@ void abortConnection()
 	if (ServerMode==FALSE) 
 	{
 		 //Client
-		 //gchar* cmd=g_strdup_printf("%s -DisconnectClients", winvnc4);
-		 //WinExec(cmd,NULL); 
 		 WinExec("taskkill /im winvnc4.exe /f",NULL);
 		 
 	}else{
@@ -358,7 +379,6 @@ void getPublicIp()
 	{
 		 err_message(MainWindow,"Problemi nel ricevere ip pubblico",error->message,"Errore fatale");
 		 g_error_free (error);
-		 //publicIp=g_strdup_printf("%s", "");
 		 return;
 	}
 	publicIp=GetKey(publicIpFile,"Connessione" ,"IP");
@@ -458,7 +478,41 @@ Categories=Network;Utility;RemoteAccess;\n\
 #endif
 
 }
+void deleteLogs()
+{
+	#ifdef _WIN32
+	gchar* clientLog=g_build_filename("c:","temp","WinVNC4.log",NULL);
+	gchar* serverLog=g_build_filename("c:","temp","vncviewer.log",NULL);
+	#endif
+	
+	#ifdef linux
+	gchar* clientLog=g_build_filename(g_get_tmp_dir(),"pobvnc.log",NULL);
+	gchar* serverLog=g_build_filename(g_get_tmp_dir(),"vncviewer.log",NULL);
+	#endif
+	
+	if (g_file_test (clientLog, G_FILE_TEST_EXISTS)) g_remove(clientLog);
+	if (g_file_test (serverLog, G_FILE_TEST_EXISTS)) g_remove(serverLog);
+}
 
 
+#ifdef _WIN32
+void StartProcess(char* szExe)
+{
 
+    STARTUPINFO startupInfo;
+    PROCESS_INFORMATION processInfo;
 
+    ZeroMemory( &startupInfo, sizeof(startupInfo) );
+    startupInfo.cb = sizeof(startupInfo);
+    ZeroMemory( &processInfo, sizeof(processInfo) );
+
+    if (CreateProcess(0, szExe, 0, 0, FALSE, NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW, 0, 0, &startupInfo, &processInfo))
+    {
+        //WaitForSingleObject( processInfo.hProcess, INFINITE );
+    }else{
+        MessageBox(NULL, szExe, "Server not started", MB_OK); 
+    }
+    CloseHandle( processInfo.hProcess );
+    CloseHandle( processInfo.hThread );
+}
+#endif

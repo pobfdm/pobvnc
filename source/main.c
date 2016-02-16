@@ -39,6 +39,7 @@ gchar* binPath;
 void on_MainWindow_delete_event(GtkWidget *widget, gpointer user_data)       
 {                                                                         
     abortConnection();
+    deleteLogs();
     gtk_main_quit();
 }
 
