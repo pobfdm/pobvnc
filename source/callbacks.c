@@ -280,7 +280,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			
 			#ifdef linux
 			g_remove (logfile);
-			cmd=g_strdup_printf("vncviewer -listen %s -Log *:file:30", port); // /tmp/vncviewer.log
+			cmd=g_strdup_printf("vncviewer -listen %s -Log *:file:100", port); // /tmp/vncviewer.log
 			//cmd=g_strdup_printf("vncviewer -listen %s ", port);
 			g_print("Cmd->%s\n",cmd);
 			g_spawn_command_line_async (cmd, &error);
@@ -298,7 +298,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			
 			//cmd=g_strdup_printf("start /B %s  -listen %s -Log *:file:100", vncviewer,port);
 			//system(cmd);
-			cmd=g_strdup_printf("%s  -listen %s -Log *:file:30", vncviewer,port);
+			cmd=g_strdup_printf("%s  -listen %s -Log *:file:100", vncviewer,port);
 			StartProcess(cmd);
 			#endif
 		}
