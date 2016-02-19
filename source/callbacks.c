@@ -516,3 +516,39 @@ void StartProcess(char* szExe)
     CloseHandle( processInfo.hThread );
 }
 #endif
+
+
+void checkDependencies()
+{
+#ifdef linux
+	if (g_find_program_in_path ("x11vnc")!=NULL && g_find_program_in_path ("vncviewer")!=NULL) return ;
+	gchar* cmd;
+	GError* error;
+	
+	
+	
+	//test if we are in Arch Linux based
+	if (g_find_program_in_path ("pacman")!=NULL)
+	{
+		gint r =info_YesNo(MainWindow,_("Missing dependencies"),_("Can I try to install the dependencies?"),_("Check deps"));
+		if (r==GTK_RESPONSE_YES)
+		{
+			//test for xterm
+			if (g_find_program_in_path ("xterm")==NULL)
+			{
+				err_message(MainWindow,_("Please install xterm"),_("I need xterm to install dependencies"),"Error");
+				return;
+			}
+			if (g_find_program_in_path ("x11vnc")==NULL) cmd=g_strdup_printf("xterm -e 'sudo pacman --noconfirm -S tigervnc x11vnc' &");
+			if (g_find_program_in_path ("vncviewer")==NULL) cmd=g_strdup_printf("xterm -e 'sudo pacman --noconfirm -S tigervnc x11vnc' &");
+			g_print("%s\n",cmd);
+			system(cmd);
+		}
+	}//arch based
+	
+	
+	
+	
+#endif
+
+}

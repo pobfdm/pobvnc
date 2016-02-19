@@ -73,7 +73,12 @@ void init()
 	
 	gtk_button_set_label (GTK_BUTTON(StartStop), _("Connect"));
 	
-		
+	#ifdef _WIN32 //Hide install menu item on windows
+	GObject* installMenuItem=gtk_builder_get_object (xml,"imagemenuitemInstall" );
+	gtk_widget_set_visible(GTK_IMAGE_MENU_ITEM(installMenuItem),FALSE);
+	#endif	
+	
+	checkDependencies();
 } 
 
 

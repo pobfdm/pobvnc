@@ -693,8 +693,12 @@ Public License instead of this License.  But first, please read
 
 Contributors
 ============
-	Rita Guaiana &lt;ritaguaiana@gmail.com&gt;</property>
-    <property name="translator_credits" translatable="yes">Rita Guaiana - ritaguaiana@gmail.com</property>
+	Rita Guaiana &lt;ritaguaiana@gmail.com&gt;
+
+</property>
+    <property name="translator_credits" translatable="yes">
+
+Rita Guaiana - ritaguaiana@gmail.com</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
@@ -718,7 +722,6 @@ Contributors
       </object>
     </child>
   </object>
-  <object class="GtkAction" id="action1"/>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -948,7 +951,7 @@ Contributors
             </child>
             <child>
               <object class="GtkCheckButton" id="checkbuttonServer">
-                <property name="label" translatable="yes">Server</property>
+                <property name="label" translatable="yes">Help someone</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>

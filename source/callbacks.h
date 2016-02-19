@@ -10,3 +10,4 @@ void deleteLogs();
 #ifdef _WIN32 
 void StartProcess(char* szExe); 
 #endif
+void checkDependencies();

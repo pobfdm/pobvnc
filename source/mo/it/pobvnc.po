@@ -154,3 +154,20 @@ msgstr "Installa/Disinstalla"
 msgid "About"
 msgstr "Informazioni su..."
 
+msgid "Help someone"
+msgstr "Aiuta qualcuno"
+
+msgid "Missing dependencies"
+msgstr "Dipendenze mancanti"
+
+msgid "Can I try to install the dependencies?"
+msgstr "Posso provare a installarle?"
+
+msgid "Check deps"
+msgstr "Controllo dipendenze"
+
+msgid "Please install xterm"
+msgstr "Per vavore installa xterm"
+
+msgid "I need xterm to install dependencies"
+msgstr "Ho bisogno di xterm per installare le dipendenze."

@@ -25,7 +25,6 @@
 extern lblStatus;
 
 
- 
 void
 info_message(GtkWidget *main_window,gchar* title, gchar *msg, gchar* winlabel)
 {
