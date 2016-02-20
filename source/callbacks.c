@@ -533,16 +533,18 @@ void checkDependencies()
 		gint r =info_YesNo(MainWindow,_("Missing dependencies"),_("Can I try to install the dependencies?"),_("Check deps"));
 		if (r==GTK_RESPONSE_YES)
 		{
-			//test for xterm
-			if (g_find_program_in_path ("xterm")==NULL)
+			//test for term
+			if (getTerm()==NULL)
 			{
 				err_message(MainWindow,_("Please install xterm"),_("I need xterm to install dependencies"),"Error");
 				return;
+			}else{
+				gchar* term=getTerm();
+				if (g_find_program_in_path ("x11vnc")==NULL) cmd=g_strdup_printf("%s -e 'sudo pacman --noconfirm -S tigervnc x11vnc' &", term);
+				if (g_find_program_in_path ("vncviewer")==NULL) cmd=g_strdup_printf("%s -e 'sudo pacman --noconfirm -S tigervnc x11vnc' &",term);
+				g_print("%s\n",cmd);
+				system(cmd);
 			}
-			if (g_find_program_in_path ("x11vnc")==NULL) cmd=g_strdup_printf("xterm -e 'sudo pacman --noconfirm -S tigervnc x11vnc' &");
-			if (g_find_program_in_path ("vncviewer")==NULL) cmd=g_strdup_printf("xterm -e 'sudo pacman --noconfirm -S tigervnc x11vnc' &");
-			g_print("%s\n",cmd);
-			system(cmd);
 		}
 	}//arch based
 	

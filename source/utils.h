@@ -7,3 +7,4 @@ void* SetKey(const gchar* File,const gchar* group , const gchar* key, const gcha
 void setGreenStatus(gchar* s);
 void setRedStatus(gchar* s);
 void initGettex();
+gchar* getTerm();

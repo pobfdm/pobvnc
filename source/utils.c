@@ -210,6 +210,19 @@ void initGettex()
 
 }
 
-
+gchar* getTerm()
+{
+		gchar* term=NULL;
+		
+		if (g_find_program_in_path ("xterm")!=NULL) term=g_strdup_printf("xterm") ;
+		if (g_find_program_in_path ("rxvt")!=NULL) term=g_strdup_printf("rxvt") ;
+		if (g_find_program_in_path ("sakura")!=NULL) term=g_strdup_printf("sakura") ;
+		if (g_find_program_in_path ("gnome-terminal")!=NULL) term=g_strdup_printf("gnome-terminal") ;
+		if (g_find_program_in_path ("konsole")!=NULL) term=g_strdup_printf("konsole") ;
+		if (g_find_program_in_path ("mate-terminal")!=NULL) term=g_strdup_printf("mate-terminal") ;
+		if (g_find_program_in_path ("Terminal")!=NULL) term=g_strdup_printf("Terminal") ;
+		
+		return term;
+}
 
 
