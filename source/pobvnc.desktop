@@ -1,0 +1,10 @@
+[Desktop Entry] 
+Type=Application
+Name=Pobvnc
+GenericName=Get Help!
+Comment=Help a friend!
+Exec=pobvnc
+Icon=/usr/share/icons/lifesaver.svg
+Terminal=FALSE
+StartupNotify=TRUE
+Categories=Network;Utility;RemoteAccess;
