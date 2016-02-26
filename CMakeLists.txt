@@ -28,16 +28,22 @@ INCLUDE_DIRECTORIES (. ${GTK_INCLUDE_DIRS})
 LINK_DIRECTORIES (${GTK_LIBRARY_DIRS} )
 LINK_LIBRARIES (${GTK_LIBRARIES} )
 
+#Generating resources on Linux
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	
+	EXECUTE_PROCESS(
+		WORKING_DIRECTORY source
+		COMMAND glib-compile-resources --generate-source linux64-resource.xml
+	)
+	 
+	EXECUTE_PROCESS(
+		WORKING_DIRECTORY source		
+		COMMAND glib-compile-resources --generate-source linux32-resource.xml
+	)
+    
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-EXECUTE_PROCESS(
-	WORKING_DIRECTORY source
-	COMMAND glib-compile-resources --generate-source linux64-resource.xml
-)
- 
-EXECUTE_PROCESS(
-	WORKING_DIRECTORY source		
-	COMMAND glib-compile-resources --generate-source linux32-resource.xml
-)
+
 
 #Indichiamo dove sara' messo l'eseguibile
 ADD_EXECUTABLE(pobvnc source/linux64-resource.c source/callbacks.c source/utils.c source/main.c)
@@ -54,4 +60,8 @@ ADD_EXECUTABLE(pobvnc source/linux64-resource.c source/callbacks.c source/utils.
 
 #Copia file per l'installazione
 #ADD_SUBDIRECTORY (src)
+
+SET(CMAKE_INSTALL_PREFIX /usr)
 INSTALL (TARGETS pobvnc DESTINATION bin)
+INSTALL (FILES source/pobvnc.desktop DESTINATION share/applications/)
+INSTALL (FILES source/lifesaver.svg DESTINATION share/icons/)
