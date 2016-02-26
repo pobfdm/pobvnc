@@ -548,6 +548,27 @@ void checkDependencies()
 		}
 	}//arch based
 	
+	//test if we are in Debian based
+	if (g_find_program_in_path ("apt-get")!=NULL)
+	{
+		gint r =info_YesNo(MainWindow,_("Missing dependencies"),_("Can I try to install the dependencies?"),_("Check deps"));
+		if (r==GTK_RESPONSE_YES)
+		{
+			//test for term
+			if (getTerm()==NULL)
+			{
+				err_message(MainWindow,_("Please install xterm"),_("I need xterm to install dependencies"),"Error");
+				return;
+			}else{
+				gchar* term=getTerm();
+				if (g_find_program_in_path ("x11vnc")==NULL) cmd=g_strdup_printf("%s -e 'sudo apt-get install x11vnc' &", term);
+				//if (g_find_program_in_path ("vncviewer")==NULL) cmd=g_strdup_printf("%s -e 'sudo pacman --noconfirm -S tigervnc x11vnc' &",term);
+				g_print("%s\n",cmd);
+				system(cmd);
+			}
+		}
+	}//arch based
+	
 	
 	
 	
