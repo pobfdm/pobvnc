@@ -417,6 +417,7 @@ Categories=Network;Utility;RemoteAccess;\n\
 ";
 	strDesktopFile=g_strdup_printf(strDesktopFile, g_get_home_dir (),g_get_home_dir ());
 	gchar* pobvncBinFile=g_build_filename(g_get_home_dir (),".local/bin/pobvnc",NULL);
+	gchar* pobvncShareApplicationsFolder=g_build_filename(g_get_home_dir (),".local/share/applications/",NULL);
 	gchar* pobvncDesktopFile=g_build_filename(g_get_home_dir (),".local/share/applications/pobvnc.desktop",NULL);
 	gchar* pobvncIconFile=g_build_filename(g_get_home_dir (),".local/share/icons/lifesaver.svg",NULL);
 	
@@ -436,6 +437,7 @@ Categories=Network;Utility;RemoteAccess;\n\
 		g_print("Installer begin...");
 		if (!g_file_test (binDir, G_FILE_TEST_EXISTS)) g_mkdir(binDir, 0755);
 		if (!g_file_test (iconsDir, G_FILE_TEST_EXISTS)) g_mkdir(iconsDir, 0755);
+		if (!g_file_test (pobvncShareApplicationsFolder, G_FILE_TEST_EXISTS)) g_mkdir(pobvncShareApplicationsFolder, 0755);
 		
 		//Write .destop file in $HOME/.local/share/applications/
 		g_file_set_contents (pobvncDesktopFile,strDesktopFile, -1,NULL);
@@ -561,13 +563,26 @@ void checkDependencies()
 				return;
 			}else{
 				gchar* term=getTerm();
-				if (g_find_program_in_path ("x11vnc")==NULL) cmd=g_strdup_printf("%s -e 'sudo apt-get install x11vnc' &", term);
-				//if (g_find_program_in_path ("vncviewer")==NULL) cmd=g_strdup_printf("%s -e 'sudo pacman --noconfirm -S tigervnc x11vnc' &",term);
-				g_print("%s\n",cmd);
-				system(cmd);
+				if (g_find_program_in_path ("x11vnc")==NULL)
+				{
+					cmd=g_strdup_printf("%s -e 'sudo apt-get install x11vnc' &", term);
+					g_print("%s\n",cmd);
+					system(cmd);
+				}
+				if (g_find_program_in_path ("vncviewer")==NULL)
+				{
+					//cmd=g_strdup_printf("%s -e 'sudo pacman --noconfirm -S tigervnc x11vnc' &",term);
+					copyFromResource("resource:///org/pobvnc/res/install_tigervnc.sh", "/tmp/install_tigervnc.sh");
+					cmd=g_strdup_printf("%s -e 'sudo sh /tmp/install_tigervnc.sh' &", term);
+					g_print("%s\n",cmd);
+					system(cmd); 
+				}
+				
+				
+				
 			}
 		}
-	}//arch based
+	}//Debian based
 	
 	
 	

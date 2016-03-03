@@ -5,5 +5,6 @@
     <file compressed="true">lifesaver.png</file>
     <file compressed="true">lifesaver.svg</file>
     <file compressed="true">mo/it/pobvnc.mo</file>
+    <file compressed="true">install_tigervnc.sh</file>
   </gresource>
 </gresources>

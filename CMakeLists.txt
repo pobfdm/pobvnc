@@ -61,7 +61,11 @@ ADD_EXECUTABLE(pobvnc source/linux64-resource.c source/callbacks.c source/utils.
 #Copia file per l'installazione
 #ADD_SUBDIRECTORY (src)
 
+# for uninstall use: 'xargs rm < install_manifest.txt'
 SET(CMAKE_INSTALL_PREFIX /usr)
 INSTALL (TARGETS pobvnc DESTINATION bin)
 INSTALL (FILES source/pobvnc.desktop DESTINATION share/applications/)
 INSTALL (FILES source/lifesaver.svg DESTINATION share/icons/)
+
+#Binary installer (run 'cpack --config CPackConfig.cmake' if you want binary pack)
+#INCLUDE(CPack)

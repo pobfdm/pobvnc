@@ -8,3 +8,4 @@ void setGreenStatus(gchar* s);
 void setRedStatus(gchar* s);
 void initGettex();
 gchar* getTerm();
+void copyFromResource(gchar* res, gchar* dest);

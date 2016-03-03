@@ -225,4 +225,11 @@ gchar* getTerm()
 		return term;
 }
 
+void copyFromResource(gchar* res, gchar* dest)
+{
+	GFile*  mySRC =  g_file_new_for_uri(res);
+	GFile*  myDEST =  g_file_new_for_path(dest);
+	g_file_copy (mySRC,  myDEST,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
+
+}
 
