@@ -22,7 +22,7 @@ extern GObject *aboutWin;
 gint State=0; 
 gchar* winvnc4;
 gchar* vncviewer;
-gchar* publicIp="";
+gchar** publicIp;
 extern gchar* 	logo_file ;
 extern binPath;
 gchar* logfile;
@@ -372,7 +372,7 @@ void getPublicIp()
 {
 	GError* error;
 	gchar* publicIpFile=g_build_filename(g_get_tmp_dir(),"publicIp.ini", NULL);
-	GFile*  mySRC =  g_file_new_for_uri("http://www.freemedialab.org/myip/index.php");
+	GFile*  mySRC =  g_file_new_for_uri("http://www.freemedialab.org/pobvnc/myip.php");
 	GFile*  myDEST =  g_file_new_for_path(publicIpFile);
 	g_file_copy (mySRC,  myDEST,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    &error);
 	if (error!=NULL)
@@ -381,7 +381,8 @@ void getPublicIp()
 		 g_error_free (error);
 		 return;
 	}
-	publicIp=GetKey(publicIpFile,"Connessione" ,"IP");
+	//publicIp=GetKey(publicIpFile,"Connessione" ,"IP");
+	g_file_get_contents (publicIpFile,&publicIp, NULL,NULL);
 	gtk_entry_set_text(GTK_ENTRY(entryHost),publicIp);
 }
 
