@@ -78,6 +78,13 @@ void init()
 	gtk_widget_set_visible(GTK_IMAGE_MENU_ITEM(installMenuItem),FALSE);
 	#endif	
 	
+	if (g_find_program_in_path ("pobvnc")!=NULL) //Hide install menu item if installed
+	{
+		GObject* installMenuItem=gtk_builder_get_object (xml,"imagemenuitemInstall" );
+		gtk_widget_set_visible(GTK_IMAGE_MENU_ITEM(installMenuItem),FALSE);
+	}
+	
+	
 	checkDependencies();
 } 
 
