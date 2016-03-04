@@ -11,12 +11,20 @@ IF (NOT PKG_CONFIG_FOUND)
 	MESSAGE (FATAL_ERROR "pkg-config not found...")
 ENDIF (NOT PKG_CONFIG_FOUND)
 
-pkg_check_modules (GTK REQUIRED gtk+-2.0>=2.24)
+
 
 #Controlla se ci sono le Gtk+-2.0
+pkg_check_modules (GTK REQUIRED gtk+-2.0>=2.24)
 IF (NOT GTK_FOUND)
 	MESSAGE(FATAL_ERROR "You don't seem to have gtk2 >= 2.24 development libraries installed...")
 ENDIF (NOT GTK_FOUND)
+
+#Controlla se ci sono le Gio-2.0
+pkg_check_modules (GIO REQUIRED gio-2.0>=2.0)
+
+IF (NOT GIO_FOUND)
+	MESSAGE(FATAL_ERROR "You don't seem to have GIO-2 >= 2.0 development libraries installed...")
+ENDIF (NOT GIO_FOUND)
 
 ADD_DEFINITIONS()
 

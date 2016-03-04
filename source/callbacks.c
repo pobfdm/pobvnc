@@ -571,7 +571,6 @@ void checkDependencies()
 				}
 				if (g_find_program_in_path ("vncviewer")==NULL)
 				{
-					//cmd=g_strdup_printf("%s -e 'sudo pacman --noconfirm -S tigervnc x11vnc' &",term);
 					copyFromResource("resource:///org/pobvnc/res/install_tigervnc.sh", "/tmp/install_tigervnc.sh");
 					cmd=g_strdup_printf("%s -e 'sudo sh /tmp/install_tigervnc.sh' &", term);
 					g_print("%s\n",cmd);
