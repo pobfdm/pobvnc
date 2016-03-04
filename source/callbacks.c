@@ -22,7 +22,6 @@ extern GObject *aboutWin;
 gint State=0; 
 gchar* winvnc4;
 gchar* vncviewer;
-gchar** publicIp;
 extern gchar* 	logo_file ;
 extern binPath;
 gchar* logfile;
@@ -357,7 +356,8 @@ void isServer(GtkToggleButton* toggle, gpointer user_data)
 		ServerMode = TRUE;
 		gtk_widget_set_sensitive(GTK_WIDGET(entryHost), FALSE);
 		#ifdef linux 
-		if (getBitsCpu()==64) getPublicIp(); 
+		//if (getBitsCpu()==64) getPublicIp();
+		getPublicIp(); 
 		#endif     
 	}else{
 		g_print("Client mode...\n");
@@ -370,7 +370,8 @@ void isServer(GtkToggleButton* toggle, gpointer user_data)
 
 void getPublicIp()
 {
-	GError* error;
+	/*GError* error;
+	gchar** publicIp;
 	gchar* publicIpFile=g_build_filename(g_get_tmp_dir(),"publicIp.ini", NULL);
 	GFile*  mySRC =  g_file_new_for_uri("http://www.freemedialab.org/pobvnc/myip.php");
 	GFile*  myDEST =  g_file_new_for_path(publicIpFile);
@@ -381,9 +382,21 @@ void getPublicIp()
 		 g_error_free (error);
 		 return;
 	}
-	//publicIp=GetKey(publicIpFile,"Connessione" ,"IP");
 	g_file_get_contents (publicIpFile,&publicIp, NULL,NULL);
 	gtk_entry_set_text(GTK_ENTRY(entryHost),publicIp);
+	g_free(publicIp);*/
+	
+	if (g_find_program_in_path ("curl")!=NULL)
+	{
+		gchar** publicIp;
+		gchar* publicIpFile=g_build_filename(g_get_tmp_dir(),"publicIp.ini", NULL);
+		gchar* cmd= g_strdup_printf("curl http://www.freemedialab.org/pobvnc/myip.php > %s",publicIpFile );
+		system(cmd);
+		g_file_get_contents (publicIpFile,&publicIp, NULL,NULL);
+		gtk_entry_set_text(GTK_ENTRY(entryHost),publicIp);
+		g_free(publicIp);
+	}
+	
 }
 
 
