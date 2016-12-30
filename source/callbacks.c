@@ -12,6 +12,9 @@
 #define PROJECTURL "https://github.com/pobfdm/pobvnc"
 
 
+typedef enum {NONE,EDIT, NEW} opBookmarks;
+opBookmarks  operationBookmarks=NONE;
+
 gboolean ServerMode = FALSE;
 extern GObject *entryHost;
 extern GObject *entryPort;
@@ -19,6 +22,13 @@ extern GObject *toggleServer;
 extern GObject *MainWindow;
 extern GObject *StartStop;
 extern GObject *aboutWin;
+extern GObject *bookmarksWindow, *editBookmarkWindow;
+extern GObject *treeviewBookmarks;
+extern GtkTreeModel *bookmarksModel;
+extern GtkTreeIter  iterBookmarks; 
+extern GObject *entryLabelBookmark, *entryHostBookmark, *entryPortBookmark  ;
+extern GObject **btCancelBookmark, *btSaveBookmark;
+gchar* labelBookmark;
 gint State=0; 
 gchar* winvnc4;
 gchar* vncviewer;
@@ -357,7 +367,7 @@ void isServer(GtkToggleButton* toggle, gpointer user_data)
 		gtk_widget_set_sensitive(GTK_WIDGET(entryHost), FALSE);
 		#ifdef linux 
 		//if (getBitsCpu()==64) getPublicIp();
-		getPublicIp(); 
+		getPublicIp();
 		#endif     
 	}else{
 		g_print("Client mode...\n");
@@ -365,6 +375,207 @@ void isServer(GtkToggleButton* toggle, gpointer user_data)
 		gtk_entry_set_text(GTK_ENTRY(entryHost),"");
 		ServerMode = FALSE;
 	}
+}
+
+void showEditBookmarkWindow()
+{
+	operationBookmarks=EDIT;
+	gchar* bookmarksFilePath=g_build_filename(g_get_user_config_dir(),"pobvnc","bookmarks.conf",NULL);
+	gchar* label=labelBookmark;
+	gchar* host=GetKey(bookmarksFilePath,labelBookmark,"host");
+	gchar* port=GetKey(bookmarksFilePath,labelBookmark,"port");
+	gtk_entry_set_text(GTK_ENTRY(entryLabelBookmark),labelBookmark);
+	gtk_entry_set_text(GTK_ENTRY(entryHostBookmark),host);
+	gtk_entry_set_text(GTK_ENTRY(entryPortBookmark),port);
+	
+	gtk_widget_set_visible(GTK_WIDGET(editBookmarkWindow),TRUE);
+}
+
+void showNewBookmarkWindow()
+{
+	operationBookmarks=NEW;
+	gtk_entry_set_text(GTK_ENTRY(entryLabelBookmark),"");
+	gtk_entry_set_text(GTK_ENTRY(entryHostBookmark),"");
+	gtk_entry_set_text(GTK_ENTRY(entryPortBookmark),"");
+	gtk_widget_set_visible(GTK_WIDGET(editBookmarkWindow),TRUE);
+	
+}
+
+void hideEditBookmarkWindow()
+{
+	gtk_entry_set_text(GTK_ENTRY(entryLabelBookmark),"");
+	gtk_entry_set_text(GTK_ENTRY(entryHostBookmark),"");
+	gtk_entry_set_text(GTK_ENTRY(entryPortBookmark),"");
+	gtk_widget_set_visible(GTK_WIDGET(editBookmarkWindow),FALSE);
+}
+
+void addToBookmarks(GtkMenuItem *menuitem, gpointer user_data)
+{
+	gchar* bookmarksFilePath=g_build_filename(g_get_user_config_dir(),"pobvnc","bookmarks.conf",NULL);
+	
+	gchar* label=gtk_entry_get_text(GTK_ENTRY(entryHost));
+	gchar* host=gtk_entry_get_text(GTK_ENTRY(entryHost));
+	gchar* port=gtk_entry_get_text(GTK_ENTRY(entryPort));
+	
+	SetKey(bookmarksFilePath,label , "host", host);
+	SetKey(bookmarksFilePath,label , "port", port);
+	showBookmarks(NULL,NULL);
+	setGreenStatus(_("Bookmarks updated"));
+}
+
+void delBookmark()
+{
+	gchar* bookmarksFilePath=g_build_filename(g_get_user_config_dir(),"pobvnc","bookmarks.conf",NULL);
+	GError *error=NULL;
+	
+	GKeyFile * keyFile = g_key_file_new();
+	g_key_file_load_from_file (keyFile, bookmarksFilePath, G_KEY_FILE_KEEP_COMMENTS, &error);
+	g_key_file_remove_group (keyFile, labelBookmark, &error);
+	
+	gsize size;
+    gchar* data = g_key_file_to_data (keyFile, &size, &error);
+    g_file_set_contents (bookmarksFilePath, data, size,  &error);
+    g_free (data);
+    g_key_file_free (keyFile);
+	
+	updateBookmarks(NULL,NULL);
+}
+
+gboolean checkIfbookmarkExsists(gchar* label)
+{
+	gchar* bookmarksFilePath=g_build_filename(g_get_user_config_dir(),"pobvnc","bookmarks.conf",NULL);
+	GError *error=NULL;
+ 
+	GKeyFile * keyFile = g_key_file_new();
+ 
+	g_key_file_load_from_file (keyFile, bookmarksFilePath, G_KEY_FILE_KEEP_COMMENTS, &error);
+	gchar* myval= g_key_file_get_value  (keyFile, label, "host", &error);
+ 
+	g_key_file_free (keyFile);
+	if (error!=NULL)return FALSE;
+}
+
+void saveBookmark()
+{
+	
+	if(operationBookmarks==EDIT)delBookmark();
+	gchar* bookmarksFilePath=g_build_filename(g_get_user_config_dir(),"pobvnc","bookmarks.conf",NULL);
+	if (g_file_test (bookmarksFilePath,  G_FILE_TEST_EXISTS)==FALSE)
+	{
+		g_file_set_contents (bookmarksFilePath,"",NULL,NULL);
+	} 
+	
+	
+	gchar* label=gtk_entry_get_text(GTK_ENTRY(entryLabelBookmark));
+	gchar* host=gtk_entry_get_text(GTK_ENTRY(entryHostBookmark));
+	gchar* port=gtk_entry_get_text(GTK_ENTRY(entryPortBookmark));
+	
+	if(g_strcmp0 (host,"")==0 || g_strcmp0 (port,"")==0)
+	{
+		err_message(MainWindow,_("Error"), _("Fields host and port required!"), _("Error"));
+		return;
+	}
+	
+	
+	SetKey(bookmarksFilePath,label , "host", host);
+	SetKey(bookmarksFilePath,label , "port", port);
+	hideEditBookmarkWindow();
+	updateBookmarks(NULL,NULL);
+	operationBookmarks=NONE;
+}
+
+void onTreeviewBookmarksSignleButtonPressed(GtkWidget *treeview, GdkEventButton *event, gpointer userdata)
+{
+	gchar* label;
+	GtkTreePath *path=gtk_tree_model_get_path (bookmarksModel, &iterBookmarks);
+	GtkTreeSelection * tsel = gtk_tree_view_get_selection (treeviewBookmarks);
+	
+	
+	if ( event->button == 1)
+    {
+		if ( gtk_tree_selection_get_selected ( tsel , &bookmarksModel , &iterBookmarks ) )
+		{
+			gtk_tree_model_get(bookmarksModel, &iterBookmarks, 0, &label, -1);
+			//info_message(MainWindow,label, label, label);
+			labelBookmark=g_strdup_printf("%s", label);
+		}
+	}
+}
+
+void
+  onRowActivatedBookmark (GtkTreeView        *view,
+                  GtkTreePath        *path,
+                  GtkTreeViewColumn  *col, 
+                  gpointer            user_data)
+  {
+    GtkTreeModel *model;
+    GtkTreeIter   iter;
+    GtkTreeSelection *sel = gtk_tree_view_get_selection (view);
+	GError *error=NULL;
+	gchar* bookmarksFilePath=g_build_filename(g_get_user_config_dir(),"pobvnc","bookmarks.conf",NULL);
+	gchar* label;
+	char* host;
+	char* port;
+ 
+    model = gtk_tree_view_get_model(view);
+ 
+	if (gtk_tree_model_get_iter(model, &iter, path))
+	{
+		gtk_tree_model_get(model, &iter, 0, &label, -1);
+		host=GetKey(bookmarksFilePath,label ,"host");
+		port=GetKey(bookmarksFilePath,label ,"port");
+		gtk_entry_set_text(GTK_ENTRY(entryHost),host);
+		gtk_entry_set_text(GTK_ENTRY(entryPort),port);
+		StartStopConnection(NULL,NULL);
+	}
+ 
+ 
+ 
+  }
+ 
+void updateBookmarks(GtkWindow *window,  gpointer   user_data)
+{
+	GError *error=NULL;
+	gchar* bookmarksFilePath=g_build_filename(g_get_user_config_dir(),"pobvnc","bookmarks.conf",NULL);
+	int i;
+	
+	if (g_file_test (bookmarksFilePath,  G_FILE_TEST_EXISTS)==TRUE)
+	{
+	
+		GKeyFile * bookmarksFile = g_key_file_new();
+		g_key_file_load_from_file (bookmarksFile,bookmarksFilePath , G_KEY_FILE_KEEP_COMMENTS, &error);
+		
+		gsize ngroups;
+		gchar** groups = g_key_file_get_groups (bookmarksFile,  &ngroups);
+		gtk_list_store_clear (bookmarksModel);
+		if (ngroups==0) return;
+		for (i=0;i<=ngroups-1;i++)
+		{
+			gtk_list_store_append(bookmarksModel, &iterBookmarks);
+			gtk_list_store_set (bookmarksModel,  &iterBookmarks, 0, groups[i], -1);
+		}
+	}
+}
+
+
+
+void initBookmarksWindow()
+{
+	GtkCellRenderer     *renderer;
+	
+	bookmarksModel = gtk_list_store_new (1, G_TYPE_STRING);
+	renderer = gtk_cell_renderer_text_new (); 
+	gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (treeviewBookmarks),
+                                               -1,      
+                                               "Bookmark",  
+                                               renderer,
+                                               "text", 
+                                               NULL);
+	
+	
+	gtk_tree_view_set_model (GTK_TREE_VIEW (treeviewBookmarks), GTK_TREE_MODEL (bookmarksModel));
+	updateBookmarks(NULL, NULL);
+	g_object_unref (bookmarksModel);
 }
 
 
@@ -396,6 +607,7 @@ void getPublicIp()
 		gtk_entry_set_text(GTK_ENTRY(entryHost),publicIp);
 		g_free(publicIp);
 	}
+	
 	
 }
 
@@ -494,6 +706,19 @@ Categories=Network;Utility;RemoteAccess;\n\
 #endif
 
 }
+
+void showBookmarks(GtkMenuItem *menuitem, gpointer     user_data)
+{
+	gtk_widget_show (GTK_WIDGET(bookmarksWindow));
+	updateBookmarks(NULL,NULL);
+	
+}
+
+void hideBookmarks()
+{
+	gtk_widget_hide(GTK_WIDGET(bookmarksWindow));
+}
+
 void deleteLogs()
 {
 	#ifdef _WIN32

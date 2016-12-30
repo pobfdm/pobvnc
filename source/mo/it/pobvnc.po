@@ -171,3 +171,36 @@ msgstr "Per vavore installa xterm"
 
 msgid "I need xterm to install dependencies"
 msgstr "Ho bisogno di xterm per installare le dipendenze."
+
+msgid "Bookmark"
+msgstr "Segnalibro"
+
+msgid "Bookmarks"
+msgstr "Segnalibri"
+
+msgid "Add to bookmarks"
+msgstr "Aggiungi ai segnalibri"
+
+msgid "Show bookmarks"
+msgstr "Mostra segnalibri"
+
+msgid "Label"
+msgstr "Etichetta"
+
+msgid "Host"
+msgstr "Indirizzo"
+
+msgid "Fields host and port required!"
+msgstr "I campi indirizzo e porta sono richiesti"
+
+msgid "Add"
+msgstr "Aggiungi"
+
+msgid "Edit"
+msgstr "Modifica"
+
+msgid "Delete"
+msgstr "Elimina"
+
+msgid "Bookmarks updated"
+msgstr "Segnalibri aggiornati"

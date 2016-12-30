@@ -31,6 +31,12 @@
 
 GtkBuilder *xml;                                                 
 GObject   *widget, *MainWindow, *StartStop, *toggleServer, *entryHost, *entryPort, *aboutWin;  
+GObject *bookmarksWindow, *editBookmarkWindow;
+GObject *treeviewBookmarks, *entryLabelBookmark, *entryHostBookmark, *entryPortBookmark;
+GObject	*btAddBookmark, *btEditBookmark , *btDelBookmark, *btCancelBookmark, *btSaveBookmark;
+
+GtkTreeModel *bookmarksModel;
+GtkTreeIter    iterBookmarks;
 GObject	*lblStatus;	
 gchar* 	logo_file ;
 gchar* binPath;
@@ -85,10 +91,36 @@ void init()
 	}
 	
 	
+	GObject* imagemenuitemQuit=gtk_builder_get_object (xml,"imagemenuitemQuit" );
+	g_signal_connect (imagemenuitemQuit, "activate", G_CALLBACK(on_MainWindow_delete_event), NULL);
+	
+	
+	menuInit();
 	checkDependencies();
+	initBookmarksWindow();
 } 
 
 
+
+void menuInit()
+{
+	//Callbacks menu
+	GObject* imagemenuitemQuit=gtk_builder_get_object (xml,"imagemenuitemQuit" );
+	g_signal_connect (imagemenuitemQuit, "activate", G_CALLBACK(on_MainWindow_delete_event), NULL);
+	
+	GObject* imagemenuitemAbout=gtk_builder_get_object (xml,"imagemenuitemAbout" );
+	g_signal_connect (imagemenuitemAbout, "activate", G_CALLBACK(aboutDialog), NULL);
+	
+	GObject* imagemenuitemInstall=gtk_builder_get_object (xml,"imagemenuitemInstall" );
+	g_signal_connect (imagemenuitemInstall, "activate", G_CALLBACK(installRemove), NULL);
+	
+	GObject* mnuAddBookmark=gtk_builder_get_object (xml,"mnuAddBookmark" );
+	g_signal_connect (mnuAddBookmark, "activate", G_CALLBACK(addToBookmarks), NULL);
+	
+	GObject* mnuShowBookmarks=gtk_builder_get_object (xml,"mnuShowBookmarks" );
+	g_signal_connect (mnuShowBookmarks, "activate", G_CALLBACK(showBookmarks), NULL);
+
+}
 
 
 
@@ -117,9 +149,27 @@ int main(int argc, char* argv[])
 	
 	/*Callbacks Window widgets connect*/
 	aboutWin=gtk_builder_get_object (xml,"aboutdialog");
+	bookmarksWindow=gtk_builder_get_object(xml,"BookmarksWindow");
+	editBookmarkWindow=gtk_builder_get_object(xml,"editBookmarkWindow");
+	treeviewBookmarks=gtk_builder_get_object(xml,"treeviewBookmarks");
 	entryHost= gtk_builder_get_object (xml,"entryHost");
 	entryPort= gtk_builder_get_object (xml,"entryPort");
 	lblStatus= gtk_builder_get_object (xml,"lblStatus");
+	
+	entryLabelBookmark=gtk_builder_get_object (xml,"entryLabelBookmark" );
+	entryHostBookmark=gtk_builder_get_object (xml,"entryHostBookmark" );
+	entryPortBookmark=gtk_builder_get_object (xml,"entryPortBookmark" );
+	btCancelBookmark=gtk_builder_get_object(xml,"btCancelBookmark");
+	btSaveBookmark=gtk_builder_get_object(xml,"btSaveBookmark");
+	
+	btAddBookmark=gtk_builder_get_object(xml,"btAddBookmark");
+	g_signal_connect (btAddBookmark, "clicked", G_CALLBACK(showNewBookmarkWindow), NULL);
+	
+	btDelBookmark=gtk_builder_get_object(xml,"btDelBookmark");
+	g_signal_connect(btDelBookmark,"clicked",G_CALLBACK(delBookmark),NULL);
+	
+	btEditBookmark=gtk_builder_get_object(xml,"btEditBookmark");
+	g_signal_connect(btEditBookmark,"clicked",G_CALLBACK(showEditBookmarkWindow),NULL);
 	
 	MainWindow=gtk_builder_get_object (xml,"MainWindow" );
 	g_signal_connect (MainWindow, "delete_event", G_CALLBACK(on_MainWindow_delete_event), NULL);
@@ -130,18 +180,18 @@ int main(int argc, char* argv[])
 	toggleServer=gtk_builder_get_object (xml,"checkbuttonServer" );
 	g_signal_connect (toggleServer, "toggled", G_CALLBACK(isServer), NULL);
 	
-	//Callbacks menu
-	GObject* imagemenuitemQuit=gtk_builder_get_object (xml,"imagemenuitemQuit" );
-	g_signal_connect (imagemenuitemQuit, "activate", G_CALLBACK(on_MainWindow_delete_event), NULL);
+	g_signal_connect (btCancelBookmark, "clicked", G_CALLBACK(hideEditBookmarkWindow), NULL);
+	g_signal_connect (btSaveBookmark, "clicked", G_CALLBACK(saveBookmark), NULL);
 	
-	GObject* imagemenuitemAbout=gtk_builder_get_object (xml,"imagemenuitemAbout" );
-	g_signal_connect (imagemenuitemAbout, "activate", G_CALLBACK(aboutDialog), NULL);
+	g_signal_connect (bookmarksWindow, "delete_event", G_CALLBACK(hideBookmarks), NULL);
+	g_signal_connect (editBookmarkWindow, "delete_event", G_CALLBACK(hideEditBookmarkWindow), NULL);
 	
-	GObject* imagemenuitemInstall=gtk_builder_get_object (xml,"imagemenuitemInstall" );
-	g_signal_connect (imagemenuitemInstall, "activate", G_CALLBACK(installRemove), NULL);
+	g_signal_connect(treeviewBookmarks, "row-activated", G_CALLBACK(onRowActivatedBookmark), NULL);
+	g_signal_connect(treeviewBookmarks, "button-release-event", (GCallback) onTreeviewBookmarksSignleButtonPressed, NULL);
 	
 	/*Initializations*/
 	init();
+	
 	
 	gtk_main ();
     return 0;
