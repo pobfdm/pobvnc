@@ -561,6 +561,13 @@ void updateBookmarks(GtkWindow *window,  gpointer   user_data)
 
 void initBookmarksWindow()
 {
+	gchar* bookmarksFilePath=g_build_filename(g_get_user_config_dir(),"pobvnc","bookmarks.conf",NULL);
+	if (g_file_test (bookmarksFilePath,  G_FILE_TEST_EXISTS)==FALSE)
+	{
+		g_file_set_contents (bookmarksFilePath,"",NULL,NULL);
+	} 
+	
+	
 	GtkCellRenderer     *renderer;
 	
 	bookmarksModel = gtk_list_store_new (1, G_TYPE_STRING);
