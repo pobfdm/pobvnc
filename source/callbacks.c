@@ -527,6 +527,10 @@ void
 		gtk_entry_set_text(GTK_ENTRY(entryHost),host);
 		gtk_entry_set_text(GTK_ENTRY(entryPort),port);
 		StartStopConnection(NULL,NULL);
+		
+		//test
+		gtk_button_set_label (GTK_BUTTON(StartStop), _("Disconnect"));
+		gtk_widget_set_sensitive(GTK_WIDGET(toggleServer), FALSE);
 	}
  
  
