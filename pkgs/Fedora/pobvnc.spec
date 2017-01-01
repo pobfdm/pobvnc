@@ -1,11 +1,11 @@
 Name:		pobvnc
-Version:	0.1
+Version:	0.2
 Release:	1%{?dist}
 Summary:	Pobvnc is an application that enables you to help other people behind a firewall.
 Group:		Network
 License:	GPL
 URL:		http://www.freemedialab.org/pobvnc/
-Source0:	%{name}-%{version}.zip
+Source0:	%{name}-master.zip
 
 BuildRequires:	cmake gtk2-devel
 Requires:	gtk2 x11vnc tigervnc
@@ -14,7 +14,7 @@ Requires:	gtk2 x11vnc tigervnc
 Pobvnc is an application that enables you to help other people behind a firewall.
 
 %prep
-%autosetup
+%autosetup -n pobvnc-master
 
 
 %build
