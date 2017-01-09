@@ -491,7 +491,7 @@ void onTreeviewBookmarksSignleButtonPressed(GtkWidget *treeview, GdkEventButton 
 	GtkTreeSelection * tsel = gtk_tree_view_get_selection (treeviewBookmarks);
 	
 	
-	if ( event->button == 1)
+	if ( event->button == 1 && event->type==GDK_BUTTON_RELEASE)
     {
 		if ( gtk_tree_selection_get_selected ( tsel , &bookmarksModel , &iterBookmarks ) )
 		{
@@ -500,7 +500,10 @@ void onTreeviewBookmarksSignleButtonPressed(GtkWidget *treeview, GdkEventButton 
 			labelBookmark=g_strdup_printf("%s", label);
 		}
 	}
+	
+	
 }
+
 
 void
   onRowActivatedBookmark (GtkTreeView        *view,
@@ -518,19 +521,20 @@ void
 	char* port;
  
     model = gtk_tree_view_get_model(view);
- 
+	
 	if (gtk_tree_model_get_iter(model, &iter, path))
 	{
 		gtk_tree_model_get(model, &iter, 0, &label, -1);
+		//gtk_tree_model_get(bookmarksModel, &iterBookmarks, 0, &label, -1);
 		host=GetKey(bookmarksFilePath,label ,"host");
 		port=GetKey(bookmarksFilePath,label ,"port");
 		gtk_entry_set_text(GTK_ENTRY(entryHost),host);
 		gtk_entry_set_text(GTK_ENTRY(entryPort),port);
-		StartStopConnection(NULL,NULL);
 		
-		//test
 		gtk_button_set_label (GTK_BUTTON(StartStop), _("Disconnect"));
 		gtk_widget_set_sensitive(GTK_WIDGET(toggleServer), FALSE);
+		
+		StartStopConnection(NULL,NULL);
 	}
  
  
@@ -572,7 +576,7 @@ void initBookmarksWindow()
 	} 
 	
 	
-	GtkCellRenderer     *renderer;
+	GtkCellRenderer *renderer;
 	
 	bookmarksModel = gtk_list_store_new (1, G_TYPE_STRING);
 	renderer = gtk_cell_renderer_text_new (); 
@@ -587,6 +591,7 @@ void initBookmarksWindow()
 	gtk_tree_view_set_model (GTK_TREE_VIEW (treeviewBookmarks), GTK_TREE_MODEL (bookmarksModel));
 	updateBookmarks(NULL, NULL);
 	g_object_unref (bookmarksModel);
+	
 }
 
 

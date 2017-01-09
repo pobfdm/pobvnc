@@ -50,6 +50,34 @@ void on_MainWindow_delete_event(GtkWidget *widget, gpointer user_data)
 }
 
 
+
+void menuInit()
+{
+	//Callbacks menu
+	GObject* imagemenuitemQuit=gtk_builder_get_object (xml,"imagemenuitemQuit" );
+	g_signal_connect (imagemenuitemQuit, "activate", G_CALLBACK(on_MainWindow_delete_event), NULL);
+	
+	GObject* imagemenuitemAbout=gtk_builder_get_object (xml,"imagemenuitemAbout" );
+	g_signal_connect (imagemenuitemAbout, "activate", G_CALLBACK(aboutDialog), NULL);
+	
+	GObject* imagemenuitemInstall=gtk_builder_get_object (xml,"imagemenuitemInstall" );
+	g_signal_connect (imagemenuitemInstall, "activate", G_CALLBACK(installRemove), NULL);
+	
+	GObject* mnuAddBookmark=gtk_builder_get_object (xml,"mnuAddBookmark" );
+	g_signal_connect (mnuAddBookmark, "activate", G_CALLBACK(addToBookmarks), NULL);
+	
+	GObject* mnuShowBookmarks=gtk_builder_get_object (xml,"mnuShowBookmarks" );
+	g_signal_connect (mnuShowBookmarks, "activate", G_CALLBACK(showBookmarks), NULL);
+	
+	#ifdef _WIN32
+	//Hide bookmarks because in windows not working 
+	GObject* mnuBookmarks=gtk_builder_get_object (xml,"mnuBookmarks" );
+	gtk_widget_hide (mnuBookmarks);
+	#endif
+
+}
+
+
 void init()
 {
 	gtk_window_set_title(GTK_WINDOW(MainWindow),"Pobvnc");
@@ -90,37 +118,16 @@ void init()
 		gtk_widget_set_visible(GTK_IMAGE_MENU_ITEM(installMenuItem),FALSE);
 	}
 	
-	
 	GObject* imagemenuitemQuit=gtk_builder_get_object (xml,"imagemenuitemQuit" );
 	g_signal_connect (imagemenuitemQuit, "activate", G_CALLBACK(on_MainWindow_delete_event), NULL);
-	
 	
 	menuInit();
 	checkDependencies();
 	initBookmarksWindow();
+	
 } 
 
 
-
-void menuInit()
-{
-	//Callbacks menu
-	GObject* imagemenuitemQuit=gtk_builder_get_object (xml,"imagemenuitemQuit" );
-	g_signal_connect (imagemenuitemQuit, "activate", G_CALLBACK(on_MainWindow_delete_event), NULL);
-	
-	GObject* imagemenuitemAbout=gtk_builder_get_object (xml,"imagemenuitemAbout" );
-	g_signal_connect (imagemenuitemAbout, "activate", G_CALLBACK(aboutDialog), NULL);
-	
-	GObject* imagemenuitemInstall=gtk_builder_get_object (xml,"imagemenuitemInstall" );
-	g_signal_connect (imagemenuitemInstall, "activate", G_CALLBACK(installRemove), NULL);
-	
-	GObject* mnuAddBookmark=gtk_builder_get_object (xml,"mnuAddBookmark" );
-	g_signal_connect (mnuAddBookmark, "activate", G_CALLBACK(addToBookmarks), NULL);
-	
-	GObject* mnuShowBookmarks=gtk_builder_get_object (xml,"mnuShowBookmarks" );
-	g_signal_connect (mnuShowBookmarks, "activate", G_CALLBACK(showBookmarks), NULL);
-
-}
 
 
 
@@ -133,15 +140,16 @@ int main(int argc, char* argv[])
   	GError* error = NULL;
 	gchar* glade_file = g_build_filename(g_get_tmp_dir(),"gui.xml", NULL);
 	
+	
 	GFile*  mySRC =  g_file_new_for_uri("resource:///org/pobvnc/res/gui.xml");
 	GFile*  myDEST =  g_file_new_for_path(glade_file);
 	g_file_copy (mySRC,  myDEST,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    &error);
 	
-    /*Infine carica come disolito il file dell'interfaccia */
 	xml = gtk_builder_new ();
 	if (!gtk_builder_add_from_file (xml, glade_file, &error))
 	{
 		g_warning (_("Couldn\'t load builder file: %s"), error->message);
+		g_warning("Glade file = %s\n",glade_file);
 		g_error_free (error);
 	}
 	
@@ -187,11 +195,13 @@ int main(int argc, char* argv[])
 	g_signal_connect (editBookmarkWindow, "delete_event", G_CALLBACK(hideEditBookmarkWindow), NULL);
 	
 	g_signal_connect(treeviewBookmarks, "row-activated", G_CALLBACK(onRowActivatedBookmark), NULL);
-	g_signal_connect(treeviewBookmarks, "button-release-event", (GCallback) onTreeviewBookmarksSignleButtonPressed, NULL);
+	g_signal_connect(treeviewBookmarks, "button-release-event", G_CALLBACK(onTreeviewBookmarksSignleButtonPressed), NULL);
+	
+	
+	
 	
 	/*Initializations*/
 	init();
-	
 	
 	gtk_main ();
     return 0;
