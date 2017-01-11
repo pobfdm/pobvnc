@@ -8,7 +8,7 @@
 	#include <windows.h>
 #endif
 
-#define VERSION "0.1"
+#define VERSION "0.2"
 #define PROJECTURL "https://github.com/pobfdm/pobvnc"
 
 
