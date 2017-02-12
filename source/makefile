@@ -7,6 +7,12 @@ OPTSWIN32 = -mwindows -mms-bitfields `i686-w64-mingw32.static-pkg-config --cflag
 resource:
 	glib-compile-resources --generate-source linux64-resource.xml
 
+msys2:
+	glib-compile-resources --generate-source win32-resource.xml
+	$(CPP) exeicon.o win32-resource.c callbacks.c utils.c main.c -o ../win32/pobvnc-i686-msys2.exe $(OPTS) -D MSYS2 -mwindows -mms-bitfields
+
+
+
 linux32:
 	glib-compile-resources --generate-source linux32-resource.xml
 	$(CPP) linux32-resource.c callbacks.c utils.c main.c -o ../linux32/pobvnc-x86 $(OPTS)

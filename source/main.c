@@ -138,8 +138,11 @@ int main(int argc, char* argv[])
     
 	gtk_init (&argc, &argv);
   	GError* error = NULL;
-	gchar* glade_file = g_build_filename(g_get_tmp_dir(),"gui.xml", NULL);
 	
+	gchar* glade_file = g_build_filename(g_get_tmp_dir(),"gui.xml", NULL);
+	#ifndef MSYS2
+	glade_file = g_build_filename("gui.xml", NULL);
+	#endif
 	
 	GFile*  mySRC =  g_file_new_for_uri("resource:///org/pobvnc/res/gui.xml");
 	GFile*  myDEST =  g_file_new_for_path(glade_file);

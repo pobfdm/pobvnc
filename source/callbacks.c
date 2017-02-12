@@ -203,6 +203,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 	const gchar *host=gtk_entry_get_text (GTK_ENTRY(entryHost));
 	const gchar *port=gtk_entry_get_text (GTK_ENTRY(entryPort));
 	gchar* m;
+	
 	#ifdef linux
 	logfile=g_build_filename(g_get_tmp_dir(),"pobvnc.log", NULL);
 	#endif
