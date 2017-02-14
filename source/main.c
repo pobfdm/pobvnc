@@ -70,10 +70,11 @@ void menuInit()
 	g_signal_connect (mnuShowBookmarks, "activate", G_CALLBACK(showBookmarks), NULL);
 	
 	#ifdef _WIN32
-	//Hide bookmarks because in windows not working 
+	//Hide bookmarks because in windows and gtk3 not working 
 	GObject* mnuBookmarks=gtk_builder_get_object (xml,"mnuBookmarks" );
 	gtk_widget_hide (mnuBookmarks);
 	#endif
+	
 
 }
 
@@ -86,6 +87,9 @@ void init()
 	
 	//Set Main Image
 	gchar* 	logo_file = g_build_filename(g_get_tmp_dir(),"lifesaver.png", NULL);
+	#ifdef  __CYGWIN__
+		logo_file = g_build_filename(g_get_user_config_dir (),"Temp","lifesaver.png", NULL);
+	#endif
 	GFile*  mySRC =  g_file_new_for_uri("resource:///org/pobvnc/res/lifesaver.png");
 	GFile*  myDEST =  g_file_new_for_path(logo_file);
 	g_file_copy (mySRC,  myDEST,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL); 
@@ -107,7 +111,7 @@ void init()
 	
 	gtk_button_set_label (GTK_BUTTON(StartStop), _("Connect"));
 	
-	#ifdef _WIN32 //Hide install menu item on windows
+	#if defined _WIN32 || defined __CYGWIN__ //Hide install menu item on windows
 	GObject* installMenuItem=gtk_builder_get_object (xml,"imagemenuitemInstall" );
 	gtk_widget_set_visible(GTK_IMAGE_MENU_ITEM(installMenuItem),FALSE);
 	#endif	
@@ -140,8 +144,8 @@ int main(int argc, char* argv[])
   	GError* error = NULL;
 	
 	gchar* glade_file = g_build_filename(g_get_tmp_dir(),"gui.xml", NULL);
-	#ifndef MSYS2
-	glade_file = g_build_filename("gui.xml", NULL);
+	#ifdef  __CYGWIN__
+	glade_file = g_build_filename(g_get_user_config_dir (),"Temp","gui.xml", NULL);
 	#endif
 	
 	GFile*  mySRC =  g_file_new_for_uri("resource:///org/pobvnc/res/gui.xml");

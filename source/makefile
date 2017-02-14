@@ -9,7 +9,7 @@ resource:
 
 msys2:
 	glib-compile-resources --generate-source win32-resource.xml
-	$(CPP) exeicon.o win32-resource.c callbacks.c utils.c main.c -o ../win32/pobvnc-i686-msys2.exe $(OPTS) -D MSYS2 -mwindows -mms-bitfields
+	$(CPP) exeicon.o win32-resource.c callbacks.c utils.c main.c -o ../win32/pobvnc-i686-msys2.exe $(OPTS) -mwindows -mms-bitfields
 
 
 

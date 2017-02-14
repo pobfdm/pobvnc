@@ -4,7 +4,7 @@
 #include<locale.h>	//per gettex
 #define _(String) gettext (String) //per gettex
 
-#ifdef _WIN32 
+#if defined _WIN32 || defined __CYGWIN__
 	#include <windows.h>
 #endif
 
@@ -41,7 +41,7 @@ gboolean checkClientConnectionStatus()
 {
     if (checkLog==FALSE) return;
     
-    #ifdef _WIN32
+    #if defined _WIN32 || defined __CYGWIN__
     //do not try c:\temp\WinVNC4.log even if it was not possible to create it
 	gchar* winLogDir=g_build_filename("c:","temp", NULL);
 	if (!g_file_test (winLogDir, G_FILE_TEST_EXISTS)) return;
@@ -86,7 +86,7 @@ gboolean checkClientConnectionStatus()
 	
 	#endif
 	
-	#ifdef _WIN32
+	#if defined _WIN32 || defined __CYGWIN__
 	//If server accept connection
 	gchar* reverse_connect_ok=g_strdup_printf("Connections: accepted: %s::%s", host, port);
 	if (g_strrstr (logContents, reverse_connect_ok)!=NULL)
@@ -125,7 +125,7 @@ gboolean checkServerConnectionStatus()
 {
     if (checkLog==FALSE) return;
     
-    #ifdef _WIN32
+    #if defined _WIN32 || defined __CYGWIN__
     //do not try c:\temp\vncviewer.log even if it was not possible to create it
 	gchar* winLogDir=g_build_filename("c:","temp", NULL);
 	if (!g_file_test (winLogDir, G_FILE_TEST_EXISTS)) return;
@@ -139,7 +139,7 @@ gboolean checkServerConnectionStatus()
     #ifdef linux
     gchar* vncviewerLog="/tmp/vncviewer.log" ;
     #endif
-    #ifdef _WIN32
+    #if defined _WIN32 || defined __CYGWIN__
     gchar* vncviewerLog="c:\\temp\\vncviewer.log" ;
     #endif
     
@@ -207,7 +207,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 	#ifdef linux
 	logfile=g_build_filename(g_get_tmp_dir(),"pobvnc.log", NULL);
 	#endif
-	#ifdef _WIN32
+	#if defined _WIN32 || defined __CYGWIN__
 	//Winvnc4.exe has log filename fixed ('c:\temp\WinVNC4.log')
 	gchar* winLogDir=g_build_filename("c:","temp", NULL);
 	if (!g_file_test (winLogDir, G_FILE_TEST_EXISTS)) g_mkdir(winLogDir, 0755);
@@ -226,7 +226,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 	}
 	sleep(1);
 	
-	#ifdef _WIN32
+	#ifdef _WIN32 
 	//Copy winvnc4.exe to temp dir
 	winvnc4=g_build_filename(g_get_tmp_dir(),"winvnc4.exe", NULL);
 	GFile*  mySRC =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/winvnc4.exe");
@@ -242,6 +242,27 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 	
 	//Copy vncviewer.exe to temp dir
 	vncviewer=g_build_filename(g_get_tmp_dir(),"vncviewer.exe", NULL);
+	GFile*  mySRC3 =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/vncviewer.exe");
+	GFile*  myDEST3 =  g_file_new_for_path(vncviewer);
+	g_file_copy (mySRC3,  myDEST3,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
+	#endif
+	
+	#ifdef __CYGWIN__
+	//Copy winvnc4.exe to temp dir
+	winvnc4=g_build_filename(g_get_user_config_dir (),"Temp","winvnc4.exe", NULL);
+	GFile*  mySRC =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/winvnc4.exe");
+	GFile*  myDEST =  g_file_new_for_path(winvnc4);
+	g_file_copy (mySRC,  myDEST,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
+	
+	//Copy wm_hooks.dll to temp dir
+	gchar* wm_hooks=g_build_filename(g_get_user_config_dir (),"Temp","wm_hooks.dll", NULL);
+	GFile*  mySRC2 =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/wm_hooks.dll");
+	GFile*  myDEST2 =  g_file_new_for_path(wm_hooks);
+	g_file_copy (mySRC2,  myDEST2,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
+	
+	
+	//Copy vncviewer.exe to temp dir
+	vncviewer=g_build_filename(g_get_user_config_dir (),"Temp","vncviewer.exe", NULL);
 	GFile*  mySRC3 =  g_file_new_for_uri("resource:///org/pobvnc/res/bin-win32/vncviewer.exe");
 	GFile*  myDEST3 =  g_file_new_for_path(vncviewer);
 	g_file_copy (mySRC3,  myDEST3,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL);
@@ -273,7 +294,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 			}
 			
 			#endif
-			#ifdef _WIN32
+			#if defined _WIN32 || defined __CYGWIN__
 			g_remove (logfile);
 			cmd=g_strdup_printf("%s -SecurityTypes None -Log *:file:100", winvnc4);
 			WinExec(cmd, SW_SHOWNORMAL);
@@ -302,7 +323,7 @@ void StartStopConnection(GtkWidget *widget, gpointer user_data)
 				 return ;
 			}
 			#endif
-			#ifdef _WIN32
+			#if defined _WIN32 || defined __CYGWIN__
 			//cmd=g_strdup_printf("%s  -listen %s -Log *:file:100", vncviewer,port);
 			//WinExec(cmd, SW_SHOWNORMAL);
 			
@@ -340,7 +361,7 @@ void abortConnection()
 		
 	}
 	#endif
-	#ifdef _WIN32
+	#if defined _WIN32 || defined __CYGWIN__
 	if (ServerMode==FALSE) 
 	{
 		 //Client
@@ -366,8 +387,7 @@ void isServer(GtkToggleButton* toggle, gpointer user_data)
 		g_print("Server mode...\n");
 		ServerMode = TRUE;
 		gtk_widget_set_sensitive(GTK_WIDGET(entryHost), FALSE);
-		#ifdef linux 
-		//if (getBitsCpu()==64) getPublicIp();
+		#if defined linux || __CYGWIN__ 
 		getPublicIp();
 		#endif     
 	}else{
@@ -614,12 +634,23 @@ void getPublicIp()
 	gtk_entry_set_text(GTK_ENTRY(entryHost),publicIp);
 	g_free(publicIp);*/
 	
-	if (g_find_program_in_path ("curl")!=NULL)
+	if (g_find_program_in_path ("curl")!=NULL || g_find_program_in_path ("curl.exe")!=NULL)
 	{
 		gchar** publicIp;
+		
+		#ifdef linux
 		gchar* publicIpFile=g_build_filename(g_get_tmp_dir(),"publicIp.ini", NULL);
 		gchar* cmd= g_strdup_printf("curl http://www.freemedialab.org/pobvnc/myip.php > %s",publicIpFile );
 		system(cmd);
+		#endif
+		#ifdef __CYGWIN__
+		gchar* publicIpFile=g_build_filename(g_get_user_config_dir (),"Temp","publicIp.ini", NULL);
+		gchar* cmd= g_strdup_printf("curl.exe http://www.freemedialab.org/pobvnc/myip.php > %s",publicIpFile );
+		system(cmd);
+		sleep(1);
+		#endif
+		
+		
 		g_file_get_contents (publicIpFile,&publicIp, NULL,NULL);
 		gtk_entry_set_text(GTK_ENTRY(entryHost),publicIp);
 		g_free(publicIp);
@@ -718,7 +749,7 @@ Categories=Network;Utility;RemoteAccess;\n\
 	}
 #endif
 
-#ifdef _WIN32
+#if defined _WIN32 || defined __CYGWIN__
 	info_message(MainWindow,_("Only for Gnu/Linux"),_("This feature is only for GNU/Linux"),_("Sorry..."));
 #endif
 
@@ -738,7 +769,7 @@ void hideBookmarks()
 
 void deleteLogs()
 {
-	#ifdef _WIN32
+	#if defined _WIN32 || defined __CYGWIN__
 	gchar* clientLog=g_build_filename("c:","temp","WinVNC4.log",NULL);
 	gchar* serverLog=g_build_filename("c:","temp","vncviewer.log",NULL);
 	#endif
@@ -753,7 +784,7 @@ void deleteLogs()
 }
 
 
-#ifdef _WIN32
+#if defined _WIN32 || defined __CYGWIN__
 void StartProcess(char* szExe)
 {
 
