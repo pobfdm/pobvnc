@@ -12,7 +12,7 @@ Deps Windows: all deps are included inside the exe.</p>
 <div style="margin-bottom: 5px; font-family:Helvetica;" align="center">
 <table>
 	<tr><td style="width: 150px;height: 50px">Operating system</td><td>File</td></tr>
-	<tr><td><img src="http://www.freemedialab.org/progetti/img/win.png">Windows</td><td><a href="https://raw.githubusercontent.com/pobfdm/pobvnc/master/win32/pobvnc-i686.exe">pobvnc-i686.exe</a> (single binary), <a href="http://www.freemedialab.org/listing/pobvnc/Windows/pobvnc-setup.exe">pobvnc-setup.exe</a> (full setup)</td></tr>
+	<tr><td><img src="http://www.freemedialab.org/progetti/img/win.png">Windows</td><td><a href="http://www.freemedialab.org/listing/pobvnc/Windows/pobvnc-i686.exe">pobvnc-i686.exe</a> (single binary), <a href="http://www.freemedialab.org/listing/pobvnc/Windows/pobvnc-setup.exe">pobvnc-setup.exe</a> (full setup)</td></tr>
 	<tr><td><img src="http://www.freemedialab.org/progetti/img/linux.png">Linux 64</td><td><a href="https://raw.githubusercontent.com/pobfdm/pobvnc/master/linux64/pobvnc-x86_64">pobvnc-x86_64</a></td></tr>
 	<tr><td><img src="http://www.freemedialab.org/progetti/img/linux.png">Linux 32</td><td><a href="https://raw.githubusercontent.com/pobfdm/pobvnc/master/linux32/pobvnc-x86">pobvnc-x86 (*)</a></td></tr>
 	<tr><td><img src="http://www.freemedialab.org/progetti/img/linux.png">Linux </td><td><a href="http://www.freemedialab.org/listing/pobvnc/"> Packages for Arch, Debian, Fedora. (*)</a></td></tr>
