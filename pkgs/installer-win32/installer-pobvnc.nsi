@@ -53,8 +53,8 @@ Section "Install"
 
 	;Menu start
 	CreateDirectory "$SMPROGRAMS\Pobvnc"
-	CreateShortCut "$SMPROGRAMS\Pobvnc\Pobvnc.lnk" "$INSTDIR\pobvnc.exe"
-	CreateShortCut "$SMPROGRAMS\Pobvnc\uninstall.lnk" "$INSTDIR\Uninstall.exe"
+	CreateShortCut 	"$SMPROGRAMS\Pobvnc\Pobvnc.lnk" "$INSTDIR\pobvnc.exe"
+	CreateShortCut 	"$SMPROGRAMS\Pobvnc\uninstall.lnk" "$INSTDIR\Uninstall.exe"
 
 	;Desktop shortcut
 	CreateShortcut "$desktop\Pobvnc.lnk" "$instdir\pobvnc.exe"
@@ -62,6 +62,12 @@ Section "Install"
 	
 	; Informiamo il compilatore che sara' presente una sezione per il disinstallatore  
 	WriteUninstaller $INSTDIR\Uninstall.exe
+	
+	;Add uninstall information to Add/Remove Programs
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Pobvnc"   "DisplayName" "Pobvnc"
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Pobvnc"   "Publisher" "Fabio Di Matteo"
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Pobvnc"   "DisplayIcon" "$\"$INSTDIR\lifesaver.ico$\""
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Pobvnc"   "UninstallString" "$\"$INSTDIR\Uninstall.exe$\""
 	
 SectionEnd 
 
@@ -79,5 +85,8 @@ Section "un.Uninstall"
 	Delete "$SMPROGRAMS\Pobvnc\uninstall.lnk" 
 	Delete "$desktop\Pobvnc.lnk"
 	RMDIR  "$SMPROGRAMS\Pobvnc"
+	
+	;Rimuoviamo la chiave del registro per add/remove program
+	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Pobvnc"
 
 SectionEnd 

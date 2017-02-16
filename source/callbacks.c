@@ -638,15 +638,31 @@ void getPublicIp()
 	{
 		gchar** publicIp;
 		
+		
 		#ifdef linux
 		gchar* publicIpFile=g_build_filename(g_get_tmp_dir(),"publicIp.ini", NULL);
+		g_unlink (publicIpFile);
 		gchar* cmd= g_strdup_printf("curl http://www.freemedialab.org/pobvnc/myip.php > %s",publicIpFile );
 		system(cmd);
 		#endif
-		#ifdef __CYGWIN__
+		#if defined _WIN32 || defined __CYGWIN__
 		gchar* publicIpFile=g_build_filename(g_get_user_config_dir (),"Temp","publicIp.ini", NULL);
-		gchar* cmd= g_strdup_printf("curl.exe http://www.freemedialab.org/pobvnc/myip.php > %s",publicIpFile );
-		system(cmd);
+		g_unlink (publicIpFile);
+		gchar* cmd= g_strdup_printf("curl.exe --max-time 5 http://www.freemedialab.org/pobvnc/myip.php -o %s",publicIpFile );
+		
+		STARTUPINFO si={sizeof(si)};
+		PROCESS_INFORMATION pi;		
+		if (CreateProcess(NULL, cmd, NULL, NULL, TRUE, CREATE_NO_WINDOW , NULL, NULL, &si, &pi))
+		{
+			// Wait until child process exits.
+			WaitForSingleObject( pi.hProcess, INFINITE );
+			// Close process and thread handles. 
+			CloseHandle( pi.hProcess );
+			CloseHandle( pi.hThread );
+		}else {
+			MessageBox( NULL, GetLastError(), _("Warning"), MB_OK | MB_ICONERROR| MB_TASKMODAL);
+		}
+			
 		sleep(1);
 		#endif
 		
