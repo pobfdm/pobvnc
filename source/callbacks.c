@@ -26,7 +26,7 @@ extern GObject *bookmarksWindow, *editBookmarkWindow;
 extern GObject *treeviewBookmarks;
 extern GtkTreeModel *bookmarksModel;
 extern GtkTreeIter  iterBookmarks; 
-extern GObject *entryLabelBookmark, *entryHostBookmark, *entryPortBookmark  ;
+extern GObject *entryLabelBookmark, *entryHostBookmark, *entryPortBookmark, *mnuBookmarks  ;
 extern GObject **btCancelBookmark, *btSaveBookmark;
 gchar* labelBookmark;
 gint State=0; 
@@ -387,12 +387,14 @@ void isServer(GtkToggleButton* toggle, gpointer user_data)
 		g_print("Server mode...\n");
 		ServerMode = TRUE;
 		gtk_widget_set_sensitive(GTK_WIDGET(entryHost), FALSE);
+		gtk_widget_set_sensitive(GTK_WIDGET(mnuBookmarks), FALSE);
 		#if defined linux || __CYGWIN__ 
 		getPublicIp();
 		#endif     
 	}else{
 		g_print("Client mode...\n");
 		gtk_widget_set_sensitive(GTK_WIDGET(entryHost), TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(mnuBookmarks), TRUE);
 		gtk_entry_set_text(GTK_ENTRY(entryHost),"");
 		ServerMode = FALSE;
 	}

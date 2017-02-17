@@ -32,7 +32,7 @@
 GtkBuilder *xml;                                                 
 GObject   *widget, *MainWindow, *StartStop, *toggleServer, *entryHost, *entryPort, *aboutWin;  
 GObject *bookmarksWindow, *editBookmarkWindow;
-GObject *treeviewBookmarks, *entryLabelBookmark, *entryHostBookmark, *entryPortBookmark;
+GObject *treeviewBookmarks, *entryLabelBookmark, *entryHostBookmark, *entryPortBookmark, *mnuBookmarks;
 GObject	*btAddBookmark, *btEditBookmark , *btDelBookmark, *btCancelBookmark, *btSaveBookmark;
 
 GtkTreeModel *bookmarksModel;
@@ -176,6 +176,7 @@ int main(int argc, char* argv[])
 	entryPortBookmark=gtk_builder_get_object (xml,"entryPortBookmark" );
 	btCancelBookmark=gtk_builder_get_object(xml,"btCancelBookmark");
 	btSaveBookmark=gtk_builder_get_object(xml,"btSaveBookmark");
+	mnuBookmarks=gtk_builder_get_object(xml,"mnuBookmarks");
 	
 	btAddBookmark=gtk_builder_get_object(xml,"btAddBookmark");
 	g_signal_connect (btAddBookmark, "clicked", G_CALLBACK(showNewBookmarkWindow), NULL);
