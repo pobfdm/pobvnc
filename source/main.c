@@ -42,6 +42,17 @@ gchar* 	logo_file ;
 gchar* binPath;
 
 
+void setGreenStatus(gchar* s)
+{
+	s=g_markup_printf_escaped ("<span foreground=\"green\">%s</span>", s);
+	gtk_label_set_markup (GTK_LABEL (lblStatus), s);
+}
+void setRedStatus(gchar* s){
+	s=g_markup_printf_escaped ("<span foreground=\"red\">%s</span>", s);
+	gtk_label_set_markup (GTK_LABEL (lblStatus), s);
+}
+
+
 void on_MainWindow_delete_event(GtkWidget *widget, gpointer user_data)       
 {                                                                         
     abortConnection();
@@ -81,6 +92,7 @@ void menuInit()
 
 void init()
 {
+	
 	gtk_window_set_title(GTK_WINDOW(MainWindow),"Pobvnc");
 	gtk_window_resize(GTK_WINDOW(MainWindow),400, 200);
 	
@@ -93,9 +105,10 @@ void init()
 	GFile*  mySRC =  g_file_new_for_uri("resource:///org/pobvnc/res/lifesaver.png");
 	GFile*  myDEST =  g_file_new_for_path(logo_file);
 	g_file_copy (mySRC,  myDEST,  G_FILE_COPY_OVERWRITE, NULL, NULL,  NULL,    NULL); 
-	
+		
 	GObject *imgMain= gtk_builder_get_object (xml,"imgMain");
 	gtk_image_set_from_file(GTK_IMAGE(imgMain),logo_file);
+	
 	
 	GdkPixbuf *logo = gdk_pixbuf_new_from_file (logo_file, NULL);
 	gtk_window_set_default_icon (logo);
@@ -103,31 +116,38 @@ void init()
 	
 	setGreenStatus(_("I'm ready."));
 	
+	
 	GObject* lblHost=gtk_builder_get_object (xml,"lblHost" );
 	gtk_label_set_text (GTK_LABEL(lblHost), _("Address"));
+	
 	
 	GObject* lblPort=gtk_builder_get_object (xml,"lblPort" );
 	gtk_label_set_text (GTK_LABEL(lblPort), _("Port"));
 	
 	gtk_button_set_label (GTK_BUTTON(StartStop), _("Connect"));
 	
+	
 	#if defined _WIN32 || defined __CYGWIN__ //Hide install menu item on windows
 	GObject* installMenuItem=gtk_builder_get_object (xml,"imagemenuitemInstall" );
-	gtk_widget_set_visible(GTK_IMAGE_MENU_ITEM(installMenuItem),FALSE);
+	gtk_widget_set_visible(GTK_WIDGET(installMenuItem),FALSE);
 	#endif	
+	
 	
 	if (g_find_program_in_path ("pobvnc")!=NULL) //Hide install menu item if installed
 	{
 		GObject* installMenuItem=gtk_builder_get_object (xml,"imagemenuitemInstall" );
-		gtk_widget_set_visible(GTK_IMAGE_MENU_ITEM(installMenuItem),FALSE);
+		gtk_widget_set_visible(GTK_WIDGET(installMenuItem),FALSE);
 	}
+	
 	
 	GObject* imagemenuitemQuit=gtk_builder_get_object (xml,"imagemenuitemQuit" );
 	g_signal_connect (imagemenuitemQuit, "activate", G_CALLBACK(on_MainWindow_delete_event), NULL);
 	
+	
 	menuInit();
 	checkDependencies();
 	initBookmarksWindow();
+	
 	
 } 
 
@@ -144,6 +164,7 @@ int main(int argc, char* argv[])
   	GError* error = NULL;
 	
 	gchar* glade_file = g_build_filename(g_get_tmp_dir(),"gui.xml", NULL);
+	
 	#ifdef  __CYGWIN__
 	glade_file = g_build_filename(g_get_user_config_dir (),"Temp","gui.xml", NULL);
 	#endif

@@ -37,6 +37,8 @@ extern binPath;
 gchar* logfile;
 gboolean checkLog;
 
+
+
 gboolean checkClientConnectionStatus()
 {
     if (checkLog==FALSE) return;
@@ -480,9 +482,9 @@ gboolean checkIfbookmarkExsists(gchar* label)
 
 void saveBookmark()
 {
-	
 	if(operationBookmarks==EDIT)delBookmark();
 	gchar* bookmarksFilePath=g_build_filename(g_get_user_config_dir(),"pobvnc","bookmarks.conf",NULL);
+	
 	if (g_file_test (bookmarksFilePath,  G_FILE_TEST_EXISTS)==FALSE)
 	{
 		g_file_set_contents (bookmarksFilePath,"",NULL,NULL);
@@ -499,12 +501,13 @@ void saveBookmark()
 		return;
 	}
 	
-	
 	SetKey(bookmarksFilePath,label , "host", host);
 	SetKey(bookmarksFilePath,label , "port", port);
+	
 	hideEditBookmarkWindow();
 	updateBookmarks(NULL,NULL);
 	operationBookmarks=NONE;
+	
 }
 
 void onTreeviewBookmarksSignleButtonPressed(GtkWidget *treeview, GdkEventButton *event, gpointer userdata)
@@ -607,10 +610,8 @@ void initBookmarksWindow()
                                                -1,      
                                                "Bookmark",  
                                                renderer,
-                                               "text", 
+                                               "text",0, 
                                                NULL);
-	
-	
 	gtk_tree_view_set_model (GTK_TREE_VIEW (treeviewBookmarks), GTK_TREE_MODEL (bookmarksModel));
 	updateBookmarks(NULL, NULL);
 	g_object_unref (bookmarksModel);

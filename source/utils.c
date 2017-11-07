@@ -164,15 +164,7 @@ void* SetKey(const gchar* File,const gchar* group , const gchar* key, const gcha
  
 }  
 
-void setGreenStatus(gchar* s)
-{
-	s=g_strdup_printf("<span foreground=\"green\">%s</span>", s);
-	gtk_label_set_markup (GTK_LABEL (lblStatus), s);
-}
-void setRedStatus(gchar* s){
-	s=g_strdup_printf("<span foreground=\"red\">%s</span>", s);
-	gtk_label_set_markup (GTK_LABEL (lblStatus), s);
-}
+
 
 void initGettex()
 {

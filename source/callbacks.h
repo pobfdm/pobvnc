@@ -1,5 +1,8 @@
 void StartStopConnection(GtkWidget *widget, gpointer user_data) ; 
 void isServer(GtkToggleButton *widget, gpointer user_data) ; 
+void setGreenStatus(gchar* s);
+void setRedStatus(gchar* s);
+
 void abortConnection();
 void getPublicIp();
 void aboutDialog();
